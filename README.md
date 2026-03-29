@@ -1,3 +1,19 @@
+```
+         ┌──────────────────────────────────┐
+         │    ◎          ◎          ◎       │
+         └───────────────┬──────────────────┘
+                         │
+                    ┌────┴────┐
+                    │  ◎   ◎  │
+                    │         │
+                    │  ◎   ◎  │
+                    │         │
+                    │  ◎   ◎  │
+                    └────┬────┘
+                         │
+                         ▼
+```
+
 # Jig
 
 **The AI engineering workflow framework for teams.**
@@ -14,7 +30,7 @@ Jig fixes this the way Rails fixed web development: with strong opinions, sensib
 
 **Full Pipeline** — Every stage of development has a skill:
 ```
-DISCOVER -> BRAINSTORM -> PLAN -> EXECUTE -> REVIEW -> SHIP -> LEARN
+DISCOVER → BRAINSTORM → PLAN → EXECUTE → REVIEW → SHIP → LEARN
 ```
 
 **Parallel Execution** — `jig-team-dev` spawns parallel agent teammates with staggered quality gates. Your implementation plan runs in parallel, with spec compliance and code review at every step.
