@@ -43,16 +43,43 @@ DISCOVER → BRAINSTORM → PLAN → EXECUTE → REVIEW → SHIP → LEARN
 
 ## Quick Start
 
+### Claude Code (recommended)
+
+Add the Jig marketplace, then install the plugin:
+
 ```bash
-# Install via Claude Marketplace (recommended)
-# Or: npm install --save-dev @jig-framework/core
+# Add the Jig marketplace
+/plugin marketplace add duronext/jig
 
-# Initialize in your project
-jig init
-
-# Start working
-/jig-kickoff
+# Install the Jig plugin
+/plugin install jig@duronext-jig
 ```
+
+Or install directly from the repo in your project's `.claude/settings.json`:
+
+```json
+{
+  "plugins": ["duronext/jig"]
+}
+```
+
+After installing, initialize your project:
+
+```bash
+/jig-kickoff    # Start your first task
+```
+
+The `jig init` interactive setup will walk you through configuration — team name, ticket system, engineering concerns — and generate your `jig.config.md`. See [docs/init-experience.md](docs/init-experience.md) for the full onboarding flow.
+
+### Other Platforms (Gemini, Codex)
+
+Clone the repo and reference the skills directly:
+
+```bash
+git clone https://github.com/duronext/jig.git .jig
+```
+
+See [adapters/](adapters/) for platform-specific integration guides.
 
 ## How It Works
 

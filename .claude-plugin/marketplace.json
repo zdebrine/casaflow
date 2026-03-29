@@ -1,0 +1,16 @@
+{
+  "name": "duronext-jig",
+  "description": "Jig — The AI engineering workflow framework for teams",
+  "owner": {
+    "name": "Duro Labs",
+    "url": "https://github.com/duronext"
+  },
+  "plugins": [
+    {
+      "name": "jig",
+      "source": ".",
+      "version": "1.0.0",
+      "description": "Full lifecycle pipeline: discover, brainstorm, plan, execute, review, ship, learn"
+    }
+  ]
+}
