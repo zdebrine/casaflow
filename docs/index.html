@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jig — The AI Engineering Workflow Framework for Teams</title>
+  <meta name="description" content="Full-lifecycle development framework that guides AI agents through a structured pipeline — from ticket to post-mortem. Built for teams.">
+  <meta name="theme-color" content="#08080d">
+  <meta property="og:title" content="Jig — AI Engineering Workflow Framework">
+  <meta property="og:description" content="The full-lifecycle development framework that guides AI agents through a structured pipeline — from ticket to post-mortem.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    /* ── Custom Properties ─────────────────────────────────── */
+    :root {
+      --bg: #08080d;
+      --text-primary: #e4e4ed;
+      --text-secondary: #8888a0;
+      --text-tertiary: #555570;
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --accent-rgb: 99, 102, 241;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'SF Mono', 'Fira Code', 'Fira Mono', Menlo, monospace;
+      --max-width: 960px;
+    }
+
+    /* ── Base ──────────────────────────────────────────────── */
+    body {
+      background-color: var(--bg);
+      background-image: radial-gradient(circle at 1px 1px, hsla(0,0%,100%,.015) 1px, transparent 0);
+      background-size: 32px 32px;
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.6;
+    }
+
+    ::selection {
+      background: rgba(var(--accent-rgb), .3);
+      color: #fff;
+    }
+
+    /* ── Container ─────────────────────────────────────────── */
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ── Sections ──────────────────────────────────────────── */
+    .section {
+      padding: 5rem 0;
+    }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: rgba(var(--accent-rgb), .5);
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── Dividers ──────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      border: none;
+      background: linear-gradient(90deg, rgba(var(--accent-rgb), .25), transparent 70%);
+    }
+
+    /* ── Typography ────────────────────────────────────────── */
+    .wordmark {
+      font-size: clamp(3.5rem, 10vw, 6rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--text-primary);
+      text-shadow:
+        0 0 60px rgba(var(--accent-rgb), .35),
+        0 0 120px rgba(var(--accent-rgb), .12);
+      line-height: 1;
+      margin-bottom: 1.5rem;
+    }
+    .subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      font-weight: 400;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+    .metaphor {
+      font-size: 0.9rem;
+      color: var(--text-tertiary);
+      line-height: 1.75;
+      max-width: 600px;
+    }
+    .section-heading {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+      margin-bottom: 1rem;
+    }
+    .body-text {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+    }
+    .body-text + .body-text {
+      margin-top: 1.25rem;
+    }
+    .accent-text {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(var(--accent-rgb), .15);
+      transition: color 0.3s ease, border-color 0.3s ease;
+    }
+    a:hover {
+      color: var(--accent-hover);
+      border-bottom-color: rgba(var(--accent-rgb), .4);
+    }
+
+    /* ── Hero ──────────────────────────────────────────────── */
+    .hero {
+      padding: 8rem 0 3rem;
+    }
+
+    /* ── Quick Install ─────────────────────────────────────── */
+    .quick-install {
+      padding: 2rem 0 4rem;
+    }
+    .install-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text-tertiary);
+      margin-bottom: 1rem;
+    }
+    .install-note {
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+      margin-top: 1rem;
+    }
+    .install-note code {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* ── Code Block ────────────────────────────────────────── */
+    .code-block {
+      background: rgba(0, 0, 0, .4);
+      border: 1px solid rgba(var(--accent-rgb), .12);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      box-shadow: 0 0 32px rgba(var(--accent-rgb), .04);
+    }
+    .code-block .key { color: var(--accent); }
+    .code-block .str { color: var(--text-primary); opacity: .7; }
+    .code-block .punc { color: var(--text-tertiary); }
+    .code-block pre {
+      margin: 0;
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      color: inherit;
+    }
+    .code-block .comment { color: var(--text-tertiary); font-style: italic; }
+    .code-block .cmd { color: var(--accent); font-weight: 500; }
+
+    /* ── Pipeline ──────────────────────────────────────────── */
+    .pipeline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 2rem 0 2.5rem;
+    }
+    .stage-pill {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      padding: 0.45rem 0.9rem;
+      border: 1px solid rgba(var(--accent-rgb), .2);
+      border-radius: 4px;
+      color: var(--accent);
+      background: rgba(var(--accent-rgb), .06);
+      white-space: nowrap;
+    }
+    .pipeline-arrow {
+      color: var(--text-tertiary);
+      font-size: 0.75rem;
+      user-select: none;
+    }
+    .pipeline-note {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+    .pipeline-sub {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+    }
+
+    /* ── Skills ────────────────────────────────────────────── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem 3rem;
+    }
+    .skills-group {
+      min-width: 0;
+    }
+    .skills-stage-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: rgba(var(--accent-rgb), .45);
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(var(--accent-rgb), .08);
+    }
+    .skill-item {
+      padding: 0.35rem 0;
+    }
+    .skill-name {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--accent);
+    }
+    .skill-desc {
+      font-size: 0.78rem;
+      color: var(--text-tertiary);
+      line-height: 1.5;
+    }
+    .skills-extras {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, .06);
+    }
+    .extras-item {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      padding: 0.3rem 0;
+    }
+    .extras-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      opacity: .6;
+      flex-shrink: 0;
+    }
+    .extras-desc {
+      font-size: 0.78rem;
+      color: var(--text-tertiary);
+    }
+
+    /* ── Steps (How It Works) ──────────────────────────────── */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+    .step {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 1.25rem;
+    }
+    .step-number {
+      font-family: var(--font-mono);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: rgba(var(--accent-rgb), .25);
+      line-height: 1.4;
+    }
+    .step-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+      margin-bottom: 0.4rem;
+    }
+    .step-text {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .step-text code {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--accent);
+      opacity: .8;
+    }
+
+    /* ── Origin ────────────────────────────────────────────── */
+    .origin-text {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+    .origin-text + .origin-text {
+      margin-top: 1.5rem;
+    }
+    .origin-em {
+      color: var(--text-primary);
+      font-style: italic;
+    }
+
+    /* ── Terminal ───────────────────────────────────────────── */
+    .terminal {
+      background: rgba(0, 0, 0, .5);
+      border: 1px solid rgba(var(--accent-rgb), .1);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow:
+        0 4px 24px rgba(0, 0, 0, .3),
+        0 0 48px rgba(var(--accent-rgb), .04);
+    }
+    .terminal-header {
+      padding: 0.75rem 1rem;
+      display: flex;
+      gap: 6px;
+      background: rgba(255, 255, 255, .02);
+      border-bottom: 1px solid rgba(255, 255, 255, .05);
+    }
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .08);
+    }
+    .terminal-body {
+      padding: 1.5rem;
+      overflow-x: auto;
+    }
+    .terminal-body pre {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      line-height: 1.8;
+      color: var(--text-tertiary);
+      white-space: pre;
+      margin: 0;
+    }
+    .t-prompt { color: var(--text-tertiary); }
+    .t-cmd { color: var(--accent); font-weight: 500; }
+    .t-label { color: var(--text-secondary); }
+    .t-value { color: var(--text-primary); opacity: .85; }
+    .t-success { color: #4ade80; }
+    .t-muted { color: var(--text-tertiary); }
+    .t-bar { color: var(--accent); opacity: .6; }
+    .t-break { display: block; height: 0.8rem; }
+
+    /* ── CTA ───────────────────────────────────────────────── */
+    .cta-section {
+      text-align: center;
+      padding: 5rem 0 3rem;
+    }
+    .cta-heading {
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+    .cta-sub {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 2.5rem;
+    }
+    .cta-sub code {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--accent);
+    }
+    .cta-links {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      align-items: center;
+    }
+    .cta-link {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Footer ────────────────────────────────────────────── */
+    .footer {
+      padding: 3rem 0 4rem;
+      text-align: center;
+    }
+    .footer-text {
+      font-size: 0.65rem;
+      color: var(--text-tertiary);
+      letter-spacing: 0.04em;
+      opacity: .6;
+    }
+    .footer-text a {
+      color: var(--text-tertiary);
+      border-bottom-color: rgba(255, 255, 255, .08);
+    }
+    .footer-text a:hover {
+      color: var(--accent);
+    }
+
+    /* ── Icons ─────────────────────────────────────────────── */
+    .icon {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      vertical-align: -2px;
+      opacity: .35;
+      flex-shrink: 0;
+    }
+    .icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .skills-stage-label .icon { margin-right: 0.4rem; }
+    .extras-label .icon { margin-right: 0.3rem; opacity: .5; }
+    .step-title .icon { margin-right: 0.35rem; }
+    .cta-link .icon { margin-right: 0.3rem; vertical-align: -3px; opacity: .6; }
+
+    /* ── Animations ────────────────────────────────────────── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition:
+        opacity 0.7s cubic-bezier(.25, .1, .25, 1),
+        transform 0.7s cubic-bezier(.25, .1, .25, 1);
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Above-the-fold elements start visible */
+    .hero .fade-in,
+    .quick-install .fade-in {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── Responsive ────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .container { padding: 0 1.5rem; }
+      .hero { padding: 5rem 0 2rem; }
+      .section { padding: 4rem 0; }
+      .skills-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .step { grid-template-columns: 32px 1fr; }
+    }
+    @media (max-width: 480px) {
+      .container { padding: 0 1.25rem; }
+      .hero { padding: 3.5rem 0 1.5rem; }
+      .section { padding: 3rem 0; }
+      .pipeline { gap: 0.35rem; }
+      .stage-pill {
+        font-size: 0.6rem;
+        padding: 0.35rem 0.6rem;
+      }
+      .step { grid-template-columns: 1fr; }
+      .step-number { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ════════════════════════════════════════════════════════
+       HERO
+       ════════════════════════════════════════════════════════ -->
+  <header class="hero">
+    <div class="fade-in">
+      <h1 class="wordmark">Jig</h1>
+    </div>
+    <div class="fade-in">
+      <p class="subtitle">The AI engineering workflow framework for teams.</p>
+    </div>
+    <div class="fade-in">
+      <p class="metaphor">In manufacturing, a jig holds the workpiece and
+        guides the tool &mdash; ensuring every cut is precise, every result
+        consistent. This framework does the same for AI-assisted development.</p>
+    </div>
+  </header>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       QUICK INSTALL
+       ════════════════════════════════════════════════════════ -->
+  <section class="quick-install">
+    <div class="fade-in">
+      <p class="install-label">Quick start</p>
+      <div class="code-block"><pre><span class="comment"># Add the Jig marketplace (one-time per user)</span>
+<span class="t-prompt">$</span> <span class="cmd">/plugin marketplace add</span> <span class="str">duronext/jig</span>
+
+<span class="comment"># Install for your whole team</span>
+<span class="t-prompt">$</span> <span class="cmd">/plugin install</span> <span class="str">jig@duronext-jig</span> <span class="punc">--scope project</span></pre></div>
+      <p class="install-note">Two commands. Every teammate gets Jig on clone.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+
+  <!-- ════════════════════════════════════════════════════════
+       THE PROBLEM
+       ════════════════════════════════════════════════════════ -->
+  <section class="section" id="problem">
+    <div class="fade-in">
+      <p class="section-label">The Problem</p>
+    </div>
+    <div class="fade-in">
+      <p class="body-text">Without a shared framework, AI-assisted development
+        is the wild west. Every engineer invents their own workflow. Some
+        brainstorm before coding; others jump straight to implementation.
+        Code review depth varies by who happens to review. Skills sit in
+        scattered files no one remembers to use.</p>
+    </div>
+    <div class="fade-in">
+      <p class="body-text">The best frameworks don't just hand you tools &mdash;
+        <span class="accent-text">they give you opinions.</span> They're the
+        reason a team of two hundred engineers can onboard someone on Monday and
+        watch them ship their first PR by Wednesday. Not because the framework
+        is magic, but because everyone follows the same pipeline, the same
+        quality gates, the same patterns.</p>
+    </div>
+    <div class="fade-in">
+      <p class="body-text">Jig brings that discipline to AI engineering.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+
+  <!-- ════════════════════════════════════════════════════════
+       THE PIPELINE
+       ════════════════════════════════════════════════════════ -->
+  <section class="section" id="pipeline">
+    <div class="fade-in">
+      <p class="section-label">The Pipeline</p>
+    </div>
+    <div class="fade-in">
+      <div class="pipeline">
+        <span class="stage-pill">DISCOVER</span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="stage-pill">BRAINSTORM</span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="stage-pill">PLAN</span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="stage-pill">EXECUTE</span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="stage-pill">REVIEW</span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="stage-pill">SHIP</span>
+        <span class="pipeline-arrow">&rarr;</span>
+        <span class="stage-pill">LEARN</span>
+      </div>
+    </div>
+    <div class="fade-in">
+      <p class="pipeline-note">Every stage has a skill. Every handoff has a quality gate.</p>
+    </div>
+    <div class="fade-in">
+      <p class="pipeline-sub">Work type &mdash; bug, feature, improvement, task &mdash;
+        determines which stages run and how deep they go.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+
+  <!-- ════════════════════════════════════════════════════════
+       CORE SKILLS
+       ════════════════════════════════════════════════════════ -->
+  <section class="section" id="skills">
+    <div class="fade-in">
+      <p class="section-label">Core Skills</p>
+    </div>
+
+    <div class="fade-in">
+      <div class="skills-grid">
+
+        <div class="skills-group">
+          <div class="skills-stage-label"><span class="icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>Discover</div>
+          <div class="skill-item">
+            <div class="skill-name">kickoff</div>
+            <div class="skill-desc">Classifies work, routes through the pipeline</div>
+          </div>
+        </div>
+
+        <div class="skills-group">
+          <div class="skills-stage-label"><span class="icon"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 4 12.9V17H8v-2.1A7 7 0 0 1 12 2z"/></svg></span>Brainstorm</div>
+          <div class="skill-item">
+            <div class="skill-name">brainstorm</div>
+            <div class="skill-desc">Design exploration with concerns checklist</div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-name">prd</div>
+            <div class="skill-desc">Structured requirements with acceptance criteria</div>
+          </div>
+        </div>
+
+        <div class="skills-group">
+          <div class="skills-stage-label"><span class="icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>Plan</div>
+          <div class="skill-item">
+            <div class="skill-name">plan</div>
+            <div class="skill-desc">Designs to bite-sized TDD tasks</div>
+          </div>
+        </div>
+
+        <div class="skills-group">
+          <div class="skills-stage-label"><span class="icon"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></span>Execute</div>
+          <div class="skill-item">
+            <div class="skill-name">build</div>
+            <div class="skill-desc">Picks parallel or serial, runs the plan</div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-name">team-dev</div>
+            <div class="skill-desc">Spawns parallel agent teammates</div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-name">sdd</div>
+            <div class="skill-desc">Serial execution with two-stage review</div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-name">tdd</div>
+            <div class="skill-desc">Red-green-refactor discipline</div>
+          </div>
+        </div>
+
+        <div class="skills-group">
+          <div class="skills-stage-label"><span class="icon"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></span>Review</div>
+          <div class="skill-item">
+            <div class="skill-name">review</div>
+            <div class="skill-desc">Specialist swarm, parallel reviewers</div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-name">verify</div>
+            <div class="skill-desc">Evidence before assertions</div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-name">debug</div>
+            <div class="skill-desc">Root cause before fixes</div>
+          </div>
+        </div>
+
+        <div class="skills-group">
+          <div class="skills-stage-label"><span class="icon"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span>Ship</div>
+          <div class="skill-item">
+            <div class="skill-name">pr-create</div>
+            <div class="skill-desc">PR with description and test plan</div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-name">pr-respond</div>
+            <div class="skill-desc">Analyze, fix, reply to review feedback</div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-name">finish</div>
+            <div class="skill-desc">Branch completion and cleanup</div>
+          </div>
+        </div>
+
+        <div class="skills-group">
+          <div class="skills-stage-label"><span class="icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>Learn</div>
+          <div class="skill-item">
+            <div class="skill-name">postmortem</div>
+            <div class="skill-desc">Extracts lessons, improves skills</div>
+          </div>
+        </div>
+
+        <div class="skills-group">
+          <div class="skills-stage-label"><span class="icon"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>Meta</div>
+          <div class="skill-item">
+            <div class="skill-name">extend</div>
+            <div class="skill-desc">Scaffolds new skills, specialists, packs</div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-name">ticket</div>
+            <div class="skill-desc">Files issues in your tracker</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="fade-in">
+      <div class="skills-extras">
+        <div class="extras-item">
+          <span class="extras-label"><span class="icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></span>Agents</span>
+          <span class="extras-desc">commit &middot; code-review &middot; pr-review</span>
+        </div>
+        <div class="extras-item">
+          <span class="extras-label"><span class="icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Specialists</span>
+          <span class="extras-desc">security &middot; dead-code &middot; error-handling &middot; async-safety &middot; performance</span>
+        </div>
+        <div class="extras-item">
+          <span class="extras-label"><span class="icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>Starter pack</span>
+          <span class="extras-desc">copywriting &middot; logging &middot; testing &middot; test-coverage</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+
+  <!-- ════════════════════════════════════════════════════════
+       HOW IT WORKS
+       ════════════════════════════════════════════════════════ -->
+  <section class="section" id="how">
+    <div class="fade-in">
+      <p class="section-label">How It Works</p>
+    </div>
+
+    <div class="steps">
+      <div class="step fade-in">
+        <div class="step-number">1</div>
+        <div>
+          <div class="step-title"><span class="icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>Install</div>
+          <p class="step-text">Add one JSON snippet to your project's
+            <code>.claude/settings.json</code>. Every teammate gets the full
+            framework on clone. 16 skills, 3 agents, 5 specialists &mdash;
+            zero manual setup.</p>
+        </div>
+      </div>
+      <div class="step fade-in">
+        <div class="step-number">2</div>
+        <div>
+          <div class="step-title"><span class="icon"><svg viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg></span>Configure</div>
+          <p class="step-text"><code>jig.config.md</code> tunes the pipeline to
+            your team. Map your engineering concerns to skills. Set review policies.
+            Choose your ticket system. Override only what differs &mdash; sensible
+            defaults handle the rest.</p>
+        </div>
+      </div>
+      <div class="step fade-in">
+        <div class="step-number">3</div>
+        <div>
+          <div class="step-title"><span class="icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>Extend</div>
+          <p class="step-text">Add domain skills, custom specialists, team agents.
+            Drop them in the right directory &mdash; Jig discovers them automatically.
+            <code>/jig:extend</code> scaffolds new artifacts with valid frontmatter
+            and wires them into the framework.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+
+  <!-- ════════════════════════════════════════════════════════
+       ORIGIN
+       ════════════════════════════════════════════════════════ -->
+  <section class="section" id="origin">
+    <div class="fade-in">
+      <p class="section-label">Origin</p>
+    </div>
+    <div class="fade-in">
+      <p class="origin-text">Jig was born inside
+        <a href="https://www.durolabs.co">Duro</a>, a hardware startup where
+        jigs aren't metaphors &mdash; they're tools on the factory floor.</p>
+    </div>
+    <div class="fade-in">
+      <p class="origin-text">The engineering team spent months building an AI
+        development system for their platform: 31 skills, 6 agents, and
+        10 specialist reviewers &mdash; each one forged from actual use cases,
+        refined through real code review, battle-tested against shipping
+        deadlines.</p>
+    </div>
+    <div class="fade-in">
+      <p class="origin-text">When they stepped back and looked at what they'd
+        built &mdash; a full-lifecycle pipeline that every engineer relied on
+        daily &mdash; they realized it shouldn't stay locked inside one
+        company.</p>
+    </div>
+    <div class="fade-in">
+      <p class="origin-text"><span class="origin-em">So we extracted it,
+        generalized it, and released it as Jig.</span></p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+
+  <!-- ════════════════════════════════════════════════════════
+       WALKTHROUGH
+       ════════════════════════════════════════════════════════ -->
+  <section class="section" id="walkthrough">
+    <div class="fade-in">
+      <p class="section-label">See It In Action</p>
+    </div>
+    <div class="fade-in">
+      <p class="body-text" style="margin-bottom: 2rem;">A feature, from idea
+        to shipped &mdash; guided by Jig at every step.</p>
+    </div>
+    <div class="fade-in">
+      <div class="terminal">
+        <div class="terminal-header">
+          <span class="terminal-dot"></span>
+          <span class="terminal-dot"></span>
+          <span class="terminal-dot"></span>
+        </div>
+        <div class="terminal-body">
+<pre><span class="t-prompt">$</span> <span class="t-cmd">/jig:kickoff</span>
+<span class="t-label">  ▸ Work type:</span> <span class="t-value">feature</span>
+<span class="t-label">  ▸ Summary:</span>  <span class="t-value">Add user notification preferences</span>
+<span class="t-label">  ▸ Pipeline:</span> <span class="t-muted">discover → brainstorm → prd → build → review → ship</span>
+<span class="t-break"></span>
+<span class="t-prompt">$</span> <span class="t-cmd">/jig:brainstorm</span>
+<span class="t-label">  ▸ What problem does this solve for users?</span>
+<span class="t-label">  ▸ Approach A:</span> <span class="t-value">Per-channel toggles with sensible defaults</span>
+<span class="t-label">  ▸ Approach B:</span> <span class="t-value">Smart digest with frequency control</span>
+<span class="t-label">  ▸ Design approved</span> <span class="t-success">✓</span>
+<span class="t-break"></span>
+<span class="t-prompt">$</span> <span class="t-cmd">/jig:prd</span>
+<span class="t-label">  ▸ PRD:</span> <span class="t-value">User Notification Preferences</span>
+<span class="t-label">  ▸ 12 acceptance criteria defined</span>
+<span class="t-label">  ▸ Layer tags:</span> <span class="t-muted">[API] [DATA] [UI]</span>
+<span class="t-label">  ▸ Approved</span> <span class="t-success">✓</span>
+<span class="t-break"></span>
+<span class="t-prompt">$</span> <span class="t-cmd">/jig:build</span>
+<span class="t-label">  ▸ Strategy:</span> <span class="t-value">parallel (4 tasks, 3 agents)</span>
+<span class="t-label">  ▸ Agent 1: Data model + migrations</span>  <span class="t-bar">████████</span> <span class="t-success">done</span>
+<span class="t-label">  ▸ Agent 2: API endpoints</span>           <span class="t-bar">████████</span> <span class="t-success">done</span>
+<span class="t-label">  ▸ Agent 3: UI components</span>           <span class="t-bar">████████</span> <span class="t-success">done</span>
+<span class="t-label">  ▸ Spec compliance:</span> <span class="t-success">passed ✓</span>
+<span class="t-label">  ▸ Code quality:</span> <span class="t-success">passed ✓</span>
+<span class="t-break"></span>
+<span class="t-prompt">$</span> <span class="t-cmd">/jig:review</span>
+<span class="t-label">  ▸ Dispatching 7 specialists...</span>
+<span class="t-label">  ▸ security:</span> <span class="t-success">passed</span>
+<span class="t-label">  ▸ async-safety:</span> <span class="t-success">passed</span>
+<span class="t-label">  ▸ error-handling:</span> <span class="t-value">1 suggestion (minor)</span>
+<span class="t-label">  ▸ Confidence:</span> <span class="t-success">94%</span> <span class="t-muted">— ready to ship</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+
+  <!-- ════════════════════════════════════════════════════════
+       GET STARTED
+       ════════════════════════════════════════════════════════ -->
+  <section class="cta-section" id="start">
+    <div class="fade-in">
+      <p class="section-label" style="text-align: center;">Get Started</p>
+    </div>
+    <div class="fade-in">
+      <p class="cta-heading">Your team's workflow, unified.</p>
+    </div>
+    <div class="fade-in">
+      <p class="cta-sub">Add the plugin to your project settings, then type
+        <code>/jig:kickoff</code> to start your first task.</p>
+    </div>
+    <div class="fade-in">
+      <div class="cta-links">
+        <a href="https://github.com/duronext/jig" class="cta-link"><span class="icon"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></span>GitHub</a>
+        <a href="https://github.com/duronext/jig#quick-start" class="cta-link"><span class="icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>Install Guide</a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       FOOTER
+       ════════════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <p class="footer-text">MIT License &middot;
+      <a href="https://github.com/duronext/jig">duronext/jig</a></p>
+  </footer>
+
+</div>
+
+
+<script>
+  // Intersection Observer for scroll-triggered fade-ins
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { rootMargin: '-60px', threshold: 0.01 }
+  );
+
+  document.querySelectorAll('.fade-in').forEach((el) => {
+    // Skip hero and quick-install (above the fold)
+    if (el.closest('.hero') || el.closest('.quick-install')) return;
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
