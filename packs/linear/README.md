@@ -6,74 +6,132 @@ Integration pack for teams using [Linear](https://linear.app) as their ticket sy
 
 - Linear MCP server connected (`mcp__linear-server__*` tools available)
 - `ticket-system: linear` in `jig.config.md`
+- `## Linear` section in `jig.config.md` with team ID and label mappings (optional but recommended)
+- `## Estimates` section in `jig.config.md` with the team's scale (optional)
 
 ## How It Works
 
 When `ticket` creates an issue and `ticket-system` is `linear`, it reads this pack for:
 
 1. **Tool mapping** — which MCP tool to call and how to structure the payload
-2. **Field mapping** — how Jig issue types map to Linear labels
-3. **Branch naming** — uses Linear's `gitBranchName` response field
+2. **Field mapping** — how Jig issue types map to Linear label IDs (from `jig.config.md`)
+3. **Branch naming** — uses Linear's `gitBranchName` response field directly
 
 ## Creating a Ticket
 
-Use the Linear MCP tool:
+Read the `## Linear` section from `jig.config.md` for `team-id` and `labels`. Read `## Estimates` for the scale.
+
+Then call:
 
 ```
 mcp__linear-server__save_issue with:
-  teamId:      {team ID from team config below, or use team name}
+  teamId:      {team-id from jig.config.md, or look up by team name}
   title:       {title}
   description: {markdown body}
-  estimate:    {0|1|2|4|16|32}  (points — roughly equal to hours)
-  labelIds:    [{issue type label ID}]
+  estimate:    {value from the team's estimate scale}
+  labelIds:    [{label ID from jig.config.md labels mapping}]
   assigneeId:  {user ID, or omit if unassigned}
 ```
 
-## Issue Type Mapping
+### Looking Up Assignees
 
-Each team configures their own label IDs. Add your team's mapping below.
+If the user says "assign to yuri", look up the user:
 
-| Jig Type | Linear Label | How to find the ID |
-|----------|-------------|-------------------|
-| Feature | "Feature" label | `mcp__linear-server__list_issue_labels` → find by name |
-| Improvement | "Improvement" label | Same |
-| Bug | "Bug" label | Same |
-| Task | "Task" label | Same |
-| Refactor | "Refactor" label | Same |
-
-**To get your team's label IDs**, run:
 ```
-mcp__linear-server__list_issue_labels with teamId: {your team ID}
+mcp__linear-server__list_users → find by name
 ```
 
-## Estimate Scale
+Use the returned `id` as `assigneeId`.
 
-| Points | Meaning |
-|--------|---------|
-| 0 | Trivial — minutes |
-| 1 | ~1 hour |
-| 2 | ~2 hours |
-| 4 | ~half day |
-| 16 | ~2 days |
-| 32 | ~4 days |
+## Issue Type → Label Resolution
 
-## Branch Naming
-
-Linear's `save_issue` response includes a `gitBranchName` field — the canonical branch name Linear generated (e.g., `dustin/eng-1820-productlane-changelog`). The `ticket` skill uses this directly instead of constructing its own.
-
-## Team Configuration
-
-Teams should add their specific IDs to their project's `jig.config.md`:
+Read `labels` from the `## Linear` section in `jig.config.md`:
 
 ```yaml
 ## Linear
-team-id: 86dd96e6-f7b8-44b2-b46b-d69e875b7596
 labels:
-  feature: f6a13428-8422-4926-9c95-aee5c53166c6
-  improvement: defa5e44-7977-441b-9779-7cbaeb82a0f6
-  bug: 58ee0937-2496-42cd-a6f8-6d9de51317ec
-  task: 74e26191-523e-486d-aac4-ab981fdb61d0
-  refactor: b6537203-7e11-4089-a6c6-15f327986776
+  feature: f6a13428-...
+  improvement: defa5e44-...
+  bug: 58ee0937-...
+  task: 74e26191-...
+  refactor: b6537203-...
+  incident: 776064f1-...
 ```
 
-If these aren't configured, the skill will look up IDs dynamically using the Linear MCP tools (slower but works).
+The `ticket` skill determines the issue type during the interview. Map it to the label ID:
+
+| Interview Answer | Config Key | Label ID from config |
+|-----------------|-----------|---------------------|
+| Feature | `labels.feature` | `f6a13428-...` |
+| Improvement | `labels.improvement` | `defa5e44-...` |
+| Bug | `labels.bug` | `58ee0937-...` |
+| Task | `labels.task` | `74e26191-...` |
+| Refactor | `labels.refactor` | `b6537203-...` |
+| Incident | `labels.incident` | `776064f1-...` |
+
+**If labels aren't in config**, look them up dynamically:
+
+```
+mcp__linear-server__list_issue_labels with teamId: {team-id}
+```
+
+Match by name (case-insensitive). This is slower but works for teams that haven't configured IDs yet.
+
+## Estimate Scale
+
+Read from `## Estimates` in `jig.config.md`:
+
+```yaml
+## Estimates
+scale: [0, 1, 2, 4, 16, 32]
+unit: hours
+```
+
+Present the scale during the interview: "Estimate? (0=trivial, 1=1hr, 2=2hrs, 4=half day, 16=2 days, 32=4 days)"
+
+If no `## Estimates` section exists, use Linear's default Fibonacci: `[0, 1, 2, 3, 5, 8, 13, 21]`.
+
+## Branch Naming
+
+Linear's `save_issue` response includes a `gitBranchName` field — the canonical branch name Linear generated (e.g., `dustin/eng-1820-productlane-changelog`).
+
+**Always use `gitBranchName` from the response.** Don't construct the branch name yourself. Linear's format matches the team's branch naming conventions configured in their Linear workspace.
+
+After creating the ticket:
+
+```bash
+# On main — create and switch:
+git checkout -b {gitBranchName}
+
+# On a feature branch without ticket reference — rename:
+git branch -m {current-branch} {gitBranchName}
+```
+
+## Team Configuration
+
+Add to your project's `jig.config.md`:
+
+```yaml
+## Estimates
+scale: [0, 1, 2, 4, 16, 32]
+unit: hours
+
+## Linear
+team-id: your-team-uuid-here
+labels:
+  feature: your-feature-label-uuid
+  improvement: your-improvement-label-uuid
+  bug: your-bug-label-uuid
+  task: your-task-label-uuid
+  refactor: your-refactor-label-uuid
+```
+
+**To find your IDs:**
+
+```
+# Team ID
+mcp__linear-server__list_teams → find your team → copy id
+
+# Label IDs
+mcp__linear-server__list_issue_labels with teamId: {team-id} → copy each id
+```

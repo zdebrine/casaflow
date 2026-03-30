@@ -38,8 +38,10 @@ Read `jig.config.md` for:
 - `ticket-system` — which tracker to use (linear, github, jira)
 - `ticket-prefix` — the prefix for ticket identifiers (ENG, PROJ, etc.)
 - `branching.format` — how to name the branch after ticket creation
+- `## Estimates` — the team's estimate scale and unit (e.g., `[0, 1, 2, 4, 16, 32]` in hours)
+- `## {Tracker}` section (e.g., `## Linear`) — tracker-specific IDs like team ID and label mappings
 
-Then load the tracker-specific pack from `packs/{ticket-system}/` for tool calls and field mapping. If no pack exists for the configured system, fall back to asking the user to create the ticket manually and provide the URL.
+Then load the tracker-specific pack from `packs/{ticket-system}/` for tool calls and field mapping. The pack tells you *how* to call the tools; the config provides *which* IDs to use. If no pack exists for the configured system, fall back to asking the user to create the ticket manually and provide the URL.
 
 ### Step 2: Gather Context
 
@@ -57,7 +59,7 @@ Ask only what you don't already know. Keep it conversational — one question at
 **Always ask:**
 - Title (if not obvious from context)
 - Issue type (Feature / Improvement / Bug / Task / Refactor)
-- Estimate (if the tracker supports it)
+- Estimate — read `## Estimates` from `jig.config.md` for the team's scale and unit. Offer a suggestion based on scope. If no estimates section exists, skip this field.
 
 **Offer to fill in:**
 - Description (draft from context, let them approve or edit)
