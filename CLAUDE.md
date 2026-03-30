@@ -157,9 +157,24 @@ jig/
 ### Adding a new core skill
 1. Read `framework/SKILL_SCHEMA.md` for the frontmatter spec
 2. Read `framework/TIER_SYSTEM.md` to choose the right tier
-3. Create `core/skills/jig-{name}/SKILL.md`
-4. Create symlink: `ln -s ../../core/skills/jig-{name} .claude/skills/jig-{name}`
-5. If the skill should surface during brainstorming, add it to the concerns checklist in `jig.config.md`
+3. Create `core/skills/{name}/SKILL.md` (no `jig-` prefix on directory — the plugin namespace handles it)
+4. Create symlink: `ln -s ../../core/skills/{name} .claude/skills/{name}`
+5. Add to the `skills` array in `.claude-plugin/plugin.json`
+6. If the skill should surface during brainstorming, add it to the concerns checklist in `jig.config.md`
+
+### How consumers install Jig
+Teams add this to their project's `.claude/settings.json`:
+```json
+{
+  "enabledPlugins": { "jig@duronext-jig": true },
+  "extraKnownMarketplaces": {
+    "duronext-jig": {
+      "source": { "source": "github", "repo": "duronext/jig" }
+    }
+  }
+}
+```
+This gives every teammate on the project the full Jig framework on clone — no manual marketplace add or plugin install needed.
 
 ### Adding a specialist
 1. Create `core/specialists/{name}.md` with frontmatter: `name`, `description`, `model`, `tier`, `globs`, `severity`

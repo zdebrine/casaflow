@@ -29,17 +29,39 @@ DISCOVER → BRAINSTORM → PLAN → EXECUTE → REVIEW → SHIP → LEARN
 
 ## Quick Start
 
-### Install (Claude Code)
+### Option A: Add to your project settings (recommended)
 
-```bash
-# Add the Jig marketplace
-/plugin marketplace add duronext/jig
+Add this to your project's `.claude/settings.json` — every teammate gets Jig automatically on clone:
 
-# Install for your whole team (writes to .claude/settings.json)
-/plugin install jig@duronext-jig --scope project
+```json
+{
+  "enabledPlugins": {
+    "jig@duronext-jig": true
+  },
+  "extraKnownMarketplaces": {
+    "duronext-jig": {
+      "source": {
+        "source": "github",
+        "repo": "duronext/jig"
+      }
+    }
+  }
+}
 ```
 
-That's it. Your team gets 15 pipeline skills, 3 agents, 5 review specialists, and an engineering starter pack. Type `/jig-` to see all available commands.
+Commit that file. Done. The entire team gets 15 pipeline skills, 3 agents, 5 review specialists, and an engineering starter pack — zero manual setup.
+
+### Option B: Install via CLI
+
+If you prefer the interactive approach:
+
+```bash
+# Add the Jig marketplace (one-time per user)
+/plugin marketplace add duronext/jig
+
+# Install for your whole team
+/plugin install jig@duronext-jig --scope project
+```
 
 ### First Use
 
@@ -49,7 +71,7 @@ That's it. Your team gets 15 pipeline skills, 3 agents, 5 review specialists, an
 /jig-extend     # Add your first team skill
 ```
 
-See [docs/init-experience.md](docs/init-experience.md) for the interactive setup flow that generates your `jig.config.md`.
+Type `/jig-` to see all available commands. See [docs/init-experience.md](docs/init-experience.md) for the interactive setup flow that generates your `jig.config.md`.
 
 ### Other Platforms (Gemini, Codex)
 
