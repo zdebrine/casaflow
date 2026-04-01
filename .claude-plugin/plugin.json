@@ -1,16 +1,20 @@
 {
-  "name": "jig",
+  "name": "casaflow",
   "version": "1.0.0",
-  "description": "The AI engineering workflow framework for teams — full lifecycle from ticket to post-mortem with quality gates at every stage",
+  "description": "CasaPerks AI engineering workflow — spec-first, comprehension-gated, Jira-native. Combines Jig's pipeline infrastructure with CasaPerks' education-first philosophy.",
   "author": {
-    "name": "Duro Labs",
-    "email": "devops@durolabs.co"
+    "name": "Zak DeBrine"
   },
-  "repository": "https://github.com/duronext/jig",
+  "repository": "https://github.com/zdebrine/casaflow",
   "license": "MIT",
   "commands": "./commands/",
   "skills": [
-    "./core/skills/kickoff",
+    "./team/skills/kickoff",
+    "./team/skills/spec",
+    "./team/skills/approve-gate",
+    "./team/skills/explain",
+    "./team/skills/review-tests",
+    "./team/skills/retro",
     "./core/skills/brainstorm",
     "./core/skills/prd",
     "./core/skills/plan",
@@ -29,7 +33,8 @@
     "./core/skills/extend",
     "./packs/engineering/skills/eng-copywriting",
     "./packs/engineering/skills/eng-logging",
-    "./packs/engineering/skills/eng-testing"
+    "./packs/engineering/skills/eng-testing",
+    "./packs/jira/skills/jira-sync"
   ],
   "agents": [
     "./core/agents/commit.md",

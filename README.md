@@ -1,217 +1,247 @@
 <p>
-  <img src="assets/jig.png" alt="Jig" width="100">
+  <img src="assets/jig.png" alt="CasaFlow" width="100">
 </p>
 
-**The AI engineering workflow framework for teams.**
+**The CasaPerks AI engineering workflow — spec-first, comprehension-gated, Jira-native.**
 
-Jig is a full-lifecycle development framework that guides AI agents through a structured pipeline — from ticket to post-mortem. Named after the manufacturing tool that holds workpieces and guides tools to produce consistent results, Jig aligns your entire team around shared conventions, quality gates, and development workflows.
+CasaFlow is built on the [Jig](https://github.com/duronext/jig) framework and tuned for CasaPerks engineering culture. It guides AI agents through a structured pipeline — from Jira ticket to post-mortem — with quality gates at every stage that keep developers in comprehension of what they're building.
 
-## Why Jig?
+**Four priorities**: Speed · Dev comprehension · Code robustness · Developer education
 
-Without a framework, teams end up with scattered AI skills, inconsistent workflows, and no shared conventions. Some engineers brainstorm before coding; others don't. Code review quality varies. Nobody's sure which skills exist or when to use them.
+---
 
-Jig fixes this the way Rails fixed web development: with strong opinions, sensible defaults, and a clear structure that everyone follows.
+## Quick Start — Install on a CasaPerks Repo
 
-## What You Get
+### Option A: Project settings (recommended — whole team gets it on clone)
 
-**Full Pipeline** — Every stage of development has a skill:
-```
-DISCOVER → BRAINSTORM → PLAN → EXECUTE → REVIEW → SHIP → LEARN
-```
-
-**Parallel Execution** — `/jig:team-dev` spawns parallel agent teammates with staggered quality gates. Your implementation plan runs in parallel, with spec compliance and code review at every step.
-
-**Review Swarm** — `/jig:review` dispatches specialist reviewers in parallel (security, dead code, error handling, async safety, performance). Teams add their own domain-specific specialists.
-
-**Configurable, Not Rigid** — `jig.config.md` lets you tune the pipeline per work type, define your concerns checklist, choose your ticket system, and set review policies. Override only what you need.
-
-**Extensible** — Add domain skills (`be-database`, `fe-react`), custom specialists (`typeorm.md`, `i18n.md`), and team agents. They wire into the framework's discovery system automatically.
-
-## Quick Start
-
-### Option A: Add to your project settings (recommended)
-
-Add this to your project's `.claude/settings.json` — every teammate gets Jig automatically on clone:
+Add to your project's `.claude/settings.json`:
 
 ```json
 {
   "enabledPlugins": {
-    "jig@duronext-jig": true
+    "casaflow@zdebrine-casaflow": true
   },
   "extraKnownMarketplaces": {
-    "duronext-jig": {
+    "zdebrine-casaflow": {
       "source": {
         "source": "github",
-        "repo": "duronext/jig"
+        "repo": "zdebrine/casaflow"
       }
     }
   }
 }
 ```
 
-Commit that file. Done. The entire team gets 15 pipeline skills, 3 agents, 5 review specialists, and an engineering starter pack — zero manual setup.
+Commit that file. Every teammate who opens the project in Claude Code gets CasaFlow automatically — no manual setup, no plugin install.
 
-### Option B: Install via CLI
+### Option B: Install manually via Claude CLI
 
-If you prefer the interactive approach:
+Run these commands inside Claude Code:
 
-```bash
-# Add the Jig marketplace (one-time per user)
-/plugin marketplace add duronext/jig
-
-# Install for your whole team
-/plugin install jig@duronext-jig --scope project
+```
+/plugin marketplace add zdebrine/casaflow
+/plugin install casaflow@zdebrine-casaflow --scope project
 ```
 
-### First Use
+### Configure the pipeline
+
+Copy the config template into your project root:
 
 ```bash
-/jig:kickoff    # Start working on a task — guides you through the full pipeline
-/jig:brainstorm # Design a feature before building it
-/jig:extend     # Add your first team skill
+cp .claude-plugin-source/scaffold/casaflow.config.md casaflow.config.md
 ```
 
-Type `/jig:` to see all available commands. See [docs/init-experience.md](docs/init-experience.md) for the interactive setup flow that generates your `jig.config.md`.
+Or create `casaflow.config.md` manually — at minimum, set your team name and Jira project key:
 
-### Other Platforms (Gemini, Codex)
+```markdown
+## Team
+name: your-team-name
+platform: claude
+git-host: github
+ticket-system: jira
 
-Clone the repo and reference the skills directly:
+## Jira
+project-key: CASA
+```
+
+### Jira sync setup (optional but recommended)
+
+CasaFlow syncs specs to Jira using the Atlassian MCP server. To enable it,
+add this to your **personal** `~/.claude/settings.json` (not the project
+settings — each developer configures this for themselves):
+
+```json
+{
+  "mcpServers": {
+    "atlassian": {
+      "command": "npx",
+      "args": ["-y", "@atlassian/mcp-atlassian"],
+      "env": {
+        "ATLASSIAN_URL": "https://your-org.atlassian.net",
+        "ATLASSIAN_EMAIL": "you@casaperks.com",
+        "ATLASSIAN_API_TOKEN": "your-api-token"
+      }
+    }
+  }
+}
+```
+
+Get your API token at: https://id.atlassian.com/manage-profile/security/api-tokens
+
+Jira sync is always optional — if the MCP server isn't configured, CasaFlow
+skips sync gracefully and proceeds to `/build`.
+
+---
+
+## First Use
 
 ```bash
-git clone https://github.com/duronext/jig.git .jig
+/casaflow:spec kickoff-flow      # Write a spec before any code
+/casaflow:kickoff                # Start the full pipeline
+/casaflow:explain                # Deep explanation of code just written
+/casaflow:review-tests           # Audit test quality with mutation testing
+/casaflow:retro my-feature       # Post-feature retrospective
 ```
 
-See [adapters/](adapters/) for platform-specific integration guides.
+Type `/casaflow:` in Claude Code to see all available commands.
+
+---
+
+## What You Get
+
+### The Pipeline
+
+Every feature flows through these stages — the spec gate and approval gates
+are CasaFlow additions on top of the Jig core:
+
+```
+[SPEC] → DISCOVER → BRAINSTORM → PLAN → EXECUTE → REVIEW → SHIP → LEARN
+  ↑                                          ↑
+  Hard gate for features              Approve-gate after
+  (no code without a spec)            every build stage
+```
+
+### CasaFlow Skills
+
+| Command | What It Does |
+|---------|-------------|
+| `/casaflow:spec` | Guide the developer through writing a feature spec. 6 sections: summary, acceptance criteria, non-goals, test spec, architecture sketch, open questions. **No code until this is done.** |
+| `/casaflow:kickoff` | Start the full pipeline. For features/improvements, blocks until a spec exists. |
+| `/casaflow:approve` | Pass the stage gate. Requires answering 3 comprehension questions: structural, failure mode, and change impact. |
+| `/casaflow:explain` | Deep 5-section explanation: approach & tradeoffs, failure modes, change surface, what to test, what to refactor. |
+| `/casaflow:review-tests` | 4-phase test audit: coverage table, mutation testing (the break test), quality rubric, letter-grade summary. |
+| `/casaflow:retro` | Post-feature retrospective. 5 conversational questions, saved as a team artifact. Claude detects patterns across retros. |
+
+### Inherited from Jig
+
+| Command | What It Does |
+|---------|-------------|
+| `/casaflow:build` | Execute a plan — auto-selects parallel (`team-dev`) or serial (`sdd`) |
+| `/casaflow:review` | Dispatch the specialist swarm (security, dead-code, error-handling, async-safety, performance) |
+| `/casaflow:pr-create` | Review swarm first, then write the PR description |
+| `/casaflow:pr-respond` | Fetch comments, fix, commit, push, reply, resolve |
+| `/casaflow:debug` | Systematic debugging — root cause before fixes, always |
+| `/casaflow:tdd` | Red-green-refactor discipline |
+| `/casaflow:finish` | Merge, PR, keep, or discard — your choice |
+| `/casaflow:postmortem` | Analyze reviewer patterns, update skills |
+
+### The Approval Gate
+
+Every build stage ends with:
+
+1. **Stage report** — files changed (with coupling notes), how to run, manual
+   test checklist, what was deferred, tradeoffs made
+2. **Three comprehension questions** — structural, failure-mode, change-impact.
+   The developer must answer all three correctly before the next stage begins.
+
+This is the primary mechanism for keeping developers in comprehension as the
+codebase grows. It's intentionally uncomfortable. That discomfort is the
+learning.
+
+### Jira Integration
+
+After a spec is written, CasaFlow offers to:
+- Create a Jira epic + ticket with the spec as a comment
+- Update an existing ticket if one already exists
+- Update ticket status after each approved stage (In Progress → In Review → Done)
+- Post the PR URL as a comment on the ticket when the PR is created
+
+All Jira actions require explicit developer approval before any MCP call is
+made. Jira sync failure never blocks development.
+
+---
 
 ## How It Works
 
-Jig ships as a plugin with 16 core skills, 3 agents, and 5 review specialists. Your team adds domain skills in `.claude/skills/` that wire into the framework automatically.
+CasaFlow uses Jig's three-layer discovery system:
 
-### Core Skills (the pipeline)
+```
+team/      ← CasaPerks overrides (spec gate, approval gates, education skills)
+packs/     ← Jira pack, engineering pack
+core/      ← Jig framework defaults (pipeline, review swarm, agents)
+```
 
-| Command | Skill | What It Does |
-|---------|-------|-------------|
-| `kickoff` | Pipeline orchestrator | Classifies work (bug/feature/improvement/task) and routes through the appropriate pipeline stages. The entry point for all development work. |
-| `brainstorm` | Design exploration | One question at a time, 2-3 approaches with trade-offs, design approval gate. Surfaces your team's concerns checklist from `jig.config.md`. |
-| `prd` | Requirements capture | Structured PRD with enforceable acceptance checklists. Two tiers: Full (12 sections) for features, Light (5 sections) for bugs. Layer-tagged items (`[API]`, `[DATA]`, `[LOGIC]`, `[UI]`) feed directly into spec reviewers. |
-| `plan` | Implementation planning | Turns approved designs into bite-sized TDD tasks with exact file paths, code snippets, and verification steps. |
-| `build` | Plan execution | **The builder.** Analyzes the plan's task graph and auto-selects parallel or serial execution. You hand it a plan — it builds the thing. |
-| `team-dev` | Parallel execution | Spawns agent teammates in split panes. Each implementer works independently; the lead orchestrates staggered spec compliance + code quality reviews as they finish. Called by `build` when conditions are right. |
-| `sdd` | Serial execution | Fresh subagent per task with two-stage review (spec compliance then code quality). Called by `build` for coupled tasks or when agent teams aren't available. |
-| `review` | Code review swarm | Dispatches parallel specialist reviewers (security, dead code, error handling, async safety, performance + your team's specialists). Filters by glob match, scores mechanically, produces unified report. |
-| `pr-create` | PR creation | Runs the review swarm first, then analyzes all commits, groups by theme, writes a clear description with test plan. No corporate speak. |
-| `pr-respond` | PR feedback | Fetches unresolved comments, analyzes each (valid fix vs false positive), implements fixes, commits, pushes, replies, and resolves threads. The full loop. |
-| `postmortem` | Retrospective | After merge, analyzes what reviewers caught to find gaps in skills and specialists. Diagnoses whether the swarm or logic reviewer should have caught it, then fixes the gap. |
-| `debug` | Systematic debugging | Iron law: no fixes without root cause investigation. Four phases — investigate, analyze patterns, test hypothesis, implement. Escalates to "question the architecture" after 3 failed fixes. |
-| `verify` | Verification gate | Evidence before assertions. Run the command, read the output, THEN claim it works. Prevents "should pass now" claims without proof. |
-| `tdd` | Test-driven development | Red-green-refactor. No production code without a failing test first. Wrote code before the test? Delete it. Start over. |
-| `finish` | Branch completion | Verifies tests pass, then presents 4 options: merge locally, create PR, keep branch as-is, or discard. Handles worktree cleanup. |
-| `extend` | Framework extension | The meta-skill. Interviews you about what you need, determines the right artifact (skill, specialist, agent, pack, or config change), scaffolds it with valid frontmatter, and wires it into discovery. |
+The `team/` skills take priority. When `team/skills/kickoff` exists, it
+replaces `core/skills/kickoff` — the Jig core is unchanged and the override
+is self-contained.
 
-### Core Agents
+---
 
-| Agent | Trigger | What It Does |
-|-------|---------|-------------|
-| `commit` | "commit the work" | Conventional commits with hook awareness. Reads commitlint config, respects existing hooks, stages specific files. |
-| `code-review` | "review my code" | Dispatches the full review swarm (`tier: all`) and delivers the confidence-scored report. |
-| `pr-review` | "post review comments" | Posts inline PR comments with suggestion blocks. Validates every path and line number against the diff before posting. |
+## Configuration Reference
 
-### Core Specialists
+`casaflow.config.md` in your project root. Copy from
+[scaffold/casaflow.config.md](scaffold/casaflow.config.md) as a starting point.
 
-Dispatched by `/review` as parallel subagents. Language-agnostic:
-
-| Specialist | Severity | What It Catches |
-|-----------|----------|----------------|
-| `security` | blocking | Injection, hardcoded secrets, auth gaps, data exposure |
-| `dead-code` | major | Unused exports, write-only variables, disconnected wiring, unreachable branches |
-| `error-handling` | major | Swallowed errors, missing handling, inconsistent patterns, context loss |
-| `async-safety` | major | Race conditions, premature state flags, resource leaks, error path divergence |
-| `performance` | minor | N+1 patterns, unbounded operations, unnecessary computation, over-fetching |
-
-Teams add their own specialists in `.claude/specialists/` (e.g., `typeorm.md`, `i18n.md`, `graphql-contracts.md`). The swarm discovers them automatically.
-
-### Engineering Starter Pack
-
-Ships with Jig. Three skills + one specialist for universal engineering practices:
-
-| Skill/Specialist | What It Does |
-|-----------------|-------------|
-| `eng-copywriting` | Sentence case for all user-facing text. Always loaded. |
-| `eng-logging` | When to error vs warn vs info vs debug. Structured logging. |
-| `eng-testing` | Test pyramid, arrange-act-assert, mocking strategy, flaky test policy. |
-| `test-coverage` (specialist) | Reviews changed code for missing test coverage during swarm review. |
-
-### Your Team Skills
-
-Your domain expertise lives in `.claude/skills/` in your project. These follow Jig's schema and wire into the framework:
-
-- **Glob-triggered**: edit a database entity file → `be-database` skill auto-loads
-- **Concerns checklist**: listed in `jig.config.md` → surfaces during `/jig:brainstorm`
-- **Review swarm**: team specialists in `.claude/specialists/` → dispatched by `/jig:review`
-- **Created with**: `/jig:extend` scaffolds new skills with valid frontmatter
-
-### Configuration
-
-`jig.config.md` in your project root controls the pipeline:
+Key sections:
 
 ```yaml
 ## Team
-name: Acme
-platform: claude
-git-host: github
-ticket-system: linear
-ticket-prefix: ENG
+name: your-team-name
+ticket-system: jira
 
-## Concerns Checklist
-- i18n: .claude/skills/fe-i18n
-- security: core/specialists/security
-- test-strategy: manual
+## Spec Gate
+spec-required-for: [feature, improvement]
+
+## Approval Gates
+gates-enabled: true
+
+## Jira
+project-key: CASA
+auto-sync-spec: true
+auto-update-on-stage: true
+done-on-merge: true
+
+## Branching
+format: "{username}/{ticket-id}-{kebab-title}"
 ```
 
-The concerns checklist surfaces during brainstorming — mapping your team's engineering concerns to specific skills. See [framework/CONCERNS_CHECKLIST.md](framework/CONCERNS_CHECKLIST.md).
-
-### Tier System
-
-| Tier | Activation | Use For |
-|------|-----------|---------|
-| Standards | Always loaded | Universal rules (copywriting, commit format) |
-| Domain | Glob-triggered | Stack expertise (database, frontend, testing) |
-| Feature | Narrow globs | Feature-specific knowledge |
-| Workflow | Explicit invocation | Pipeline skills (`kickoff`, `review`) |
+---
 
 ## Updating
 
-Jig is distributed as a Claude Code plugin. To get the latest version:
+To get the latest version after this repo is updated:
 
-```bash
-/plugin marketplace update duronext-jig
-/plugin install jig@duronext-jig --scope project
+```
+/plugin marketplace update zdebrine-casaflow
+/plugin install casaflow@zdebrine-casaflow --scope project
 ```
 
-## Platform Support
-
-Jig skills are platform-agnostic markdown. Adapters handle loading for:
-- **Claude Code** (primary) — native plugin integration
-- **Gemini CLI** — GEMINI.md context loading
-- **Codex** — AGENTS.md integration
-
-Teams using GitLab or Bitbucket are supported via the [git host adapter](framework/GIT_HOST.md).
+---
 
 ## Framework Reference
 
+CasaFlow is built on Jig. The underlying framework docs:
+
 | Document | What It Covers |
 |----------|---------------|
-| [PIPELINE.md](framework/PIPELINE.md) | The 7-stage development pipeline |
-| [DISCOVERY.md](framework/DISCOVERY.md) | How Jig finds and loads skills |
-| [SKILL_SCHEMA.md](framework/SKILL_SCHEMA.md) | Frontmatter spec for all skills |
-| [TIER_SYSTEM.md](framework/TIER_SYSTEM.md) | How tiers control activation |
-| [CONCERNS_CHECKLIST.md](framework/CONCERNS_CHECKLIST.md) | Configurable brainstorming checklist |
-| [GIT_HOST.md](framework/GIT_HOST.md) | GitHub/GitLab/Bitbucket command mapping |
-| [Init Experience](docs/init-experience.md) | Interactive setup flow |
+| [framework/PIPELINE.md](framework/PIPELINE.md) | The 7-stage development pipeline |
+| [framework/DISCOVERY.md](framework/DISCOVERY.md) | How skills are found and loaded |
+| [framework/SKILL_SCHEMA.md](framework/SKILL_SCHEMA.md) | Frontmatter spec for writing skills |
+| [framework/TIER_SYSTEM.md](framework/TIER_SYSTEM.md) | How tiers control skill activation |
+| [team/README.md](team/README.md) | CasaFlow overrides guide |
+| [scaffold/casaflow.config.md](scaffold/casaflow.config.md) | Config template |
 
-## Origin
-
-Jig was extracted from [Duro's](https://www.durolabs.co) new platform, where 31 battle-tested skills, 6 agents, and 10 specialist reviewers evolved into a comprehensive AI-assisted development system. Born from a hardware startup that knows what jigs do.
+---
 
 ## License
 

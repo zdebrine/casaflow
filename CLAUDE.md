@@ -1,8 +1,14 @@
-# Jig Framework
+# CasaFlow (built on Jig)
 
-Jig is the AI engineering workflow framework for teams. It guides AI agents through a structured pipeline — from ticket to post-mortem — with quality gates at every stage. Named after the manufacturing tool that holds workpieces and guides tools to produce consistent results.
+CasaFlow is the CasaPerks AI engineering workflow — spec-first,
+comprehension-gated, and Jira-native. It is built on the Jig framework and
+customized for CasaPerks engineering culture.
 
-This repo IS Jig. It also uses itself to develop itself (Consumer Zero).
+**Four priorities**: Speed · Dev comprehension · Code robustness · Developer
+education
+
+CasaPerks overrides live in `team/`. The Jig core is untouched in `core/`.
+This repo uses itself to develop itself (Consumer Zero).
 
 ## Core Philosophy
 
@@ -31,7 +37,7 @@ Every development task flows through stages. `kickoff` orchestrates the full pip
 DISCOVER → BRAINSTORM → PLAN → EXECUTE → REVIEW → SHIP → LEARN
 ```
 
-Work type (bug/feature/improvement/task) determines which stages run and at what depth. Configured in `jig.config.md`.
+Work type (bug/feature/improvement/task) determines which stages run and at what depth. Configured in `casaflow.config.md` (or `jig.config.md`).
 
 ### How Skills Compose
 
@@ -40,6 +46,25 @@ Work type (bug/feature/improvement/task) determines which stages run and at what
 - **Specialist dispatch** — `review` discovers specialist `.md` files from all three directories, filters by glob match, and dispatches as parallel subagents.
 
 ## Inventory
+
+### CasaFlow Team Skills (6) — `team/skills/`
+
+These override or extend the Jig core for CasaPerks.
+
+| Skill | Overrides | Purpose |
+|-------|-----------|---------|
+| `kickoff` | `core/skills/kickoff` | Adds spec-first gate for features/improvements |
+| `spec` | *(new)* | Guides developer through writing a feature spec before code |
+| `approve-gate` | *(new)* | Stage report + 3 comprehension questions after each build stage |
+| `explain` | *(new)* | 5-section education explanation: approach, failure modes, change surface, tests, refactor |
+| `review-tests` | *(new)* | 4-phase test audit: coverage, mutation testing, rubric, letter grade |
+| `retro` | *(new)* | Post-feature retrospective with pattern detection across retros |
+
+### Jira Pack — `packs/jira/`
+
+| Skill | Purpose |
+|-------|---------|
+| `jira-sync` | 7-step spec-to-Jira sync; stage status updates; PR URL comments |
 
 ### Core Skills (16)
 
