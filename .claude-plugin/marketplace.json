@@ -1,14 +1,13 @@
 {
-  "name": "duronext-jig",
-  "description": "Jig — The AI engineering workflow framework for teams",
+  "name": "zdebrine-casaflow",
+  "description": "CasaPerks AI engineering workflow — spec-first, comprehension-gated, Jira-native",
   "owner": {
-    "name": "Duro Labs",
-    "email": "devops@durolabs.co"
+    "name": "Zak DeBrine"
   },
   "plugins": [
     {
-      "name": "jig",
-      "description": "Full lifecycle pipeline: discover, brainstorm, plan, execute, review, ship, learn",
+      "name": "casaflow",
+      "description": "Full lifecycle pipeline with spec gates, approval gates, and Jira integration",
       "source": "./",
       "strict": true
     }

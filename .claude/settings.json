@@ -1,12 +1,12 @@
 {
   "enabledPlugins": {
-    "jig@duronext-jig": true
+    "casaflow@zdebrine-casaflow": true
   },
   "extraKnownMarketplaces": {
-    "duronext-jig": {
+    "zdebrine-casaflow": {
       "source": {
         "source": "github",
-        "repo": "duronext/jig"
+        "repo": "zdebrine/casaflow"
       }
     }
   }
