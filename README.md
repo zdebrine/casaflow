@@ -12,7 +12,7 @@ CasaFlow is built on the [Jig](https://github.com/duronext/jig) framework and tu
 
 ## Quick Start — Install on a CasaPerks Repo
 
-### Option A: Project settings (recommended — whole team gets it on clone)
+### Project settings (recommended — whole team gets it on clone)
 
 Add to your project's `.claude/settings.json`:
 
@@ -33,15 +33,6 @@ Add to your project's `.claude/settings.json`:
 ```
 
 Commit that file. Every teammate who opens the project in Claude Code gets CasaFlow automatically — no manual setup, no plugin install.
-
-### Option B: Install manually via Claude CLI
-
-Run these commands inside Claude Code:
-
-```
-/plugin marketplace add CasaPerks/casaflow
-/plugin install casaflow@casaperks-casaflow --scope project
-```
 
 ### Configure the pipeline
 
