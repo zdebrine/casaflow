@@ -205,6 +205,44 @@ This gives every teammate on the project the full Jig framework on clone — no 
 - `framework/SKILL_SCHEMA.md` — frontmatter spec for all skills
 - `docs/specs/2026-03-28-jig-framework-design.md` — the original design spec
 
+## Command Adherence — MANDATORY
+
+When the user runs ANY `/casaflow:` command, Claude MUST follow the
+instructions in the corresponding command file exactly. Never improvise,
+freestyle, or invent a workflow. If a command file references another skill,
+load and follow that skill's SKILL.md verbatim.
+
+**If you cannot load the command's instructions, tell the user:**
+> "I can't load the full instructions for this command. Try running it again."
+
+### Critical Command Contracts
+
+| Command | Source | Non-Negotiable Requirements |
+|---------|--------|-----------------------------|
+| `/casaflow:spec` | `commands/spec.md` | 6 sections (summary, criteria, non-goals, test spec, architecture, open questions). Claude asks questions — does NOT write the spec. Mandatory comprehension check before handoff. Saves to `specs/<slug>.md`. |
+| `/casaflow:kickoff` | `commands/kickoff.md` | Classify work type first. Spec gate for features/improvements (hard stop if no spec). 9-stage pipeline: classify → spec gate → discover → brainstorm → plan → execute → review → ship → learn. Reads `casaflow.config.md`. |
+| `/casaflow:build` | `commands/build.md` | Find plan → analyze task graph → choose strategy (team-dev/sdd/direct) → execute → verify → finish. Never skip the strategy analysis. Announce the decision before executing. |
+| `/casaflow:review` | `commands/review.md` | 7-stage swarm pipeline: discover specialists → prepare diff → dispatch parallel → collect → deep review (pre-PR only) → score mechanically → report. All specialists dispatched in parallel. Score is mechanical — no exceptions. |
+| `/casaflow:brainstorm` | `core/skills/brainstorm/SKILL.md` | Hard gate: no code until design approved. Run concerns checklist from config. Save design doc. |
+| `/casaflow:plan` | `core/skills/plan/SKILL.md` | Spec → implementation plan. Tasks scoped 2-5 min. File paths per task. Dependencies. Verification steps. Save to `docs/plans/`. |
+| `/casaflow:approve` | `team/skills/approve-gate/SKILL.md` | Stage report + 3 comprehension questions (structural, failure mode, change impact). Not optional. |
+| `/casaflow:explain` | `team/skills/explain/SKILL.md` | 5-section explanation: approach, failure modes, change surface, tests, refactor. |
+| `/casaflow:review-tests` | `team/skills/review-tests/SKILL.md` | 4-phase test audit: coverage, mutation testing, rubric, letter grade. |
+| `/casaflow:retro` | `team/skills/retro/SKILL.md` | Post-feature retrospective with pattern detection across retros. |
+| `/casaflow:debug` | `core/skills/debug/SKILL.md` | Root cause before fixes, always. |
+| `/casaflow:verify` | `core/skills/verify/SKILL.md` | Evidence before assertions — run it before claiming it works. |
+| `/casaflow:tdd` | `core/skills/tdd/SKILL.md` | Red-green-refactor discipline. |
+| `/casaflow:pr-create` | `core/skills/pr-create/SKILL.md` | Voice/tone standards. Test plan required. |
+| `/casaflow:pr-respond` | `core/skills/pr-respond/SKILL.md` | Analyze, fix, commit, push, reply, resolve. |
+| `/casaflow:finish` | `core/skills/finish/SKILL.md` | Branch completion — merge, PR, keep, or discard. |
+| `/casaflow:prd` | `core/skills/prd/SKILL.md` | PRD creation with enforceable acceptance checklists. |
+| `/casaflow:ticket` | `core/skills/ticket/SKILL.md` | Ticket creation/lookup. |
+| `/casaflow:extend` | `core/skills/extend/SKILL.md` | Framework extension — scaffolds new skills, specialists, packs. |
+| `/casaflow:postmortem` | `core/skills/postmortem/SKILL.md` | Post-merge retrospective with specialist/logic reviewer diagnosis. |
+| `/casaflow:eng-copywriting` | `packs/engineering/skills/eng-copywriting/SKILL.md` | Sentence case standards. |
+| `/casaflow:eng-logging` | `packs/engineering/skills/eng-logging/SKILL.md` | Log level guidance. |
+| `/casaflow:eng-testing` | `packs/engineering/skills/eng-testing/SKILL.md` | Test strategy. |
+
 ## Git Workflow
 
 - Main branch: `main`
