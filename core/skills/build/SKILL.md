@@ -22,7 +22,7 @@ alwaysApply: false
 
 - "Build this", "execute the plan", "let's build", "implement this"
 - After `brainstorm` → `plan` produces an implementation plan
-- When you have a plan file at `docs/plans/*.md` and want to execute it
+- When you have a plan file in the vault or at `docs/plans/*.md` and want to execute it
 - When you're not sure whether to use `team-dev` or `sdd`
 
 **You don't need to know the difference between parallel and serial execution.** This skill figures it out.
@@ -53,9 +53,12 @@ flowchart TD
 Look for the implementation plan in this order:
 
 1. **User provided it** — they said "build this plan" with a file path
-2. **Most recent plan** — scan `docs/plans/` for the newest `*-plan.md` file
-3. **Current conversation** — a plan was created earlier in this session
-4. **Ask** — if no plan found, ask the user. Suggest running `plan` first.
+2. **Vault plan** — if `vault-path` and `project-name` are configured in
+   `jig.config.md` (or `casaflow.config.md`), look for
+   `<vault-path>/<project-name>/<feature-slug>/plan.md`
+3. **Legacy location** — scan `docs/plans/` for the newest `*-plan.md` file
+4. **Current conversation** — a plan was created earlier in this session
+5. **Ask** — if no plan found, ask the user. Suggest running `plan` first.
 
 ### Step 2: Read and Analyze
 

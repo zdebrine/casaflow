@@ -184,7 +184,7 @@ another skill):
 
 1. Classify work type as normal (bug/feature/improvement/task)
 2. For `feature` and `improvement` work types:
-   - Check if `specs/<feature-slug>.md` exists
+   - Check if `~/Documents/<project-name>/<feature-slug>/spec.md` exists
    - If NO spec exists:
      - Say "No spec found for this feature. Run `/casaflow:spec <name>`
        first."

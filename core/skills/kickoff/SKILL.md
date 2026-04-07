@@ -125,7 +125,7 @@ For **bugs**, **tasks**, and **small improvements**: skip this step. Users can s
 
 ### Gate Check
 
-- [ ] PRD saved to `docs/plans/YYYY-MM-DD-<topic>-prd.md` OR user opted to skip
+- [ ] PRD saved (vault: `<vault-path>/<project-name>/<feature-slug>/prd.md`, or fallback: `docs/plans/YYYY-MM-DD-<topic>-prd.md`) OR user opted to skip
 - [ ] If PRD exists, acceptance checklist has `[ ]` items tagged by layer
 
 ---
@@ -159,7 +159,7 @@ graph TD
   design["Present design sections<br/>(get approval per section)"]
   checklist["Concerns Checklist<br/>(from jig.config.md)"]
   approve{"User approves?"}
-  save["Save design doc<br/>docs/plans/YYYY-MM-DD-*-design.md"]
+  save["Save design doc<br/>(vault or docs/plans/)"]
   plan["Transition to PLAN stage"]
 
   explore --> questions --> approaches --> design --> checklist --> approve
@@ -194,7 +194,7 @@ Skip brainstorming. Move directly to Plan.
 Before proceeding, confirm:
 - [ ] Design is reviewed and approved by the user
 - [ ] Concerns checklist completed (features/improvements)
-- [ ] Design doc saved to `docs/plans/YYYY-MM-DD-<topic>-design.md` (features)
+- [ ] Design doc saved (vault: `<vault-path>/<project-name>/<feature-slug>/design.md`, or fallback: `docs/plans/YYYY-MM-DD-<topic>-design.md`)
 
 ---
 
@@ -216,11 +216,14 @@ Every plan must include:
 
 ### Plan Output
 
-Save to: `docs/plans/YYYY-MM-DD-<topic>-plan.md`
+Save to the feature directory in the vault if `vault-path` is configured:
+`<vault-path>/<project-name>/<feature-slug>/plan.md`
+
+**Fallback**: `docs/plans/YYYY-MM-DD-<topic>-plan.md`
 
 The plan header should include:
 
-> **PRD:** docs/plans/YYYY-MM-DD-&lt;topic&gt;-prd.md *(include if a PRD exists)*
+> **PRD:** `<feature-dir>/prd.md` *(include if a PRD exists)*
 > **For Claude:** Use `build` to execute this plan (auto-selects parallel or serial).
 
 The `> **PRD:**` line is how downstream spec reviewers find the acceptance checklist. Always include it when a PRD was created in the REQUIREMENTS step.
@@ -231,7 +234,7 @@ Before proceeding, confirm:
 - [ ] Plan reviewed and approved by the user
 - [ ] Tasks have clear file paths and skill references
 - [ ] Dependencies identified (which tasks block which)
-- [ ] Plan saved to `docs/plans/`
+- [ ] Plan saved (vault or `docs/plans/`)
 
 ---
 

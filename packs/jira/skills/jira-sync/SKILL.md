@@ -39,7 +39,7 @@ Then proceed to `/build` with no Jira action.
 
 > "Spec saved. Do you want to sync this spec to Jira? (yes / skip)"
 
-- **skip** → "Skipping Jira sync. Proceeding to `/build`." Stop here.
+- **skip** → "Skipping Jira sync. Returning to the calling skill." Stop here.
 - **yes** → Continue to Step 2.
 
 ---
@@ -86,11 +86,11 @@ Present before any MCP call:
 > **Description:**
 > [generated summary]
 >
-> **Comment:** Full contents of `specs/<feature>.md` added as a comment.
+> **Comment:** Full contents of `~/Documents/<project-name>/<feature-slug>/spec.md` added as a comment.
 >
 > Approve this push? (yes / skip)"
 
-- **skip** → "Skipping Jira sync. Proceeding to `/build`." Stop here.
+- **skip** → "Skipping Jira sync. Returning to the calling skill." Stop here.
 - **yes** → Continue to Step 5.
 
 ---
@@ -128,7 +128,7 @@ Confirm independently:
 
 **Description correct, comment missing:**
 > "The ticket description was synced successfully, but the comment could
-> not be confirmed. Paste the contents of `specs/<feature>.md` into the
+> not be confirmed. Paste the contents of `~/Documents/<project-name>/<feature-slug>/spec.md` into the
 > ticket comment manually to stay consistent with other tickets."
 Proceed to Step 7 for the description success.
 
@@ -177,9 +177,9 @@ If any MCP call fails:
    > [generated summary]
 
 3. Remind to add the spec as a comment:
-   > "For the ticket comment, paste the contents of `specs/<feature>.md`."
+   > "For the ticket comment, paste the contents of `~/Documents/<project-name>/<feature-slug>/spec.md`."
 
-4. Proceed to `/build` without waiting for further input.
+4. Return control to the calling skill without waiting for further input.
 
 ---
 

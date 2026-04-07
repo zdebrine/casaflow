@@ -219,12 +219,12 @@ load and follow that skill's SKILL.md verbatim.
 
 | Command | Source | Non-Negotiable Requirements |
 |---------|--------|-----------------------------|
-| `/casaflow:spec` | `commands/spec.md` | 6 sections (summary, criteria, non-goals, test spec, architecture, open questions). Claude asks questions — does NOT write the spec. Mandatory comprehension check before handoff. Saves to `specs/<slug>.md`. |
+| `/casaflow:spec` | `commands/spec.md` | 6 sections (summary, criteria, non-goals, test spec, architecture, open questions). Claude proposes test paths (happy, failure, false positive) for dev review. Mandatory comprehension check before handoff. Saves to `~/Documents/<project-name>/<feature-slug>/spec.md`. Hands off to `/kickoff`. |
 | `/casaflow:kickoff` | `commands/kickoff.md` | Classify work type first. Spec gate for features/improvements (hard stop if no spec). 9-stage pipeline: classify → spec gate → discover → brainstorm → plan → execute → review → ship → learn. Reads `casaflow.config.md`. |
 | `/casaflow:build` | `commands/build.md` | Find plan → analyze task graph → choose strategy (team-dev/sdd/direct) → execute → verify → finish. Never skip the strategy analysis. Announce the decision before executing. |
 | `/casaflow:review` | `commands/review.md` | 7-stage swarm pipeline: discover specialists → prepare diff → dispatch parallel → collect → deep review (pre-PR only) → score mechanically → report. All specialists dispatched in parallel. Score is mechanical — no exceptions. |
 | `/casaflow:brainstorm` | `core/skills/brainstorm/SKILL.md` | Hard gate: no code until design approved. Run concerns checklist from config. Save design doc. |
-| `/casaflow:plan` | `core/skills/plan/SKILL.md` | Spec → implementation plan. Tasks scoped 2-5 min. File paths per task. Dependencies. Verification steps. Save to `docs/plans/`. |
+| `/casaflow:plan` | `core/skills/plan/SKILL.md` | Spec → implementation plan. Tasks scoped 2-5 min. File paths per task. Dependencies. Verification steps. Save to `~/Documents/<project-name>/<feature-slug>/plan.md`. |
 | `/casaflow:approve` | `team/skills/approve-gate/SKILL.md` | Stage report + 3 comprehension questions (structural, failure mode, change impact). Not optional. |
 | `/casaflow:explain` | `team/skills/explain/SKILL.md` | 5-section explanation: approach, failure modes, change surface, tests, refactor. |
 | `/casaflow:review-tests` | `team/skills/review-tests/SKILL.md` | 4-phase test audit: coverage, mutation testing, rubric, letter grade. |

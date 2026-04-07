@@ -77,8 +77,9 @@ The spec has six sections:
 - Don't skip open questions. If you genuinely have none, Claude will push until
   you find some — because "no unknowns" almost always means unexplored assumptions.
 
-The spec saves to `specs/<feature-slug>.md`. `/casaflow:kickoff` will not proceed
-without it for features and improvements.
+The spec saves to `~/Documents/<project-name>/<feature-slug>/spec.md` in your
+Obsidian vault. `/casaflow:kickoff` will not proceed without it for features
+and improvements.
 
 ---
 

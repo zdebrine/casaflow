@@ -63,7 +63,9 @@ Ask the user if the type isn't obvious from context.
 
 1. Derive a slug from the work description (e.g., "add checkout flow" →
    `add-checkout-flow`).
-2. Check whether `specs/<slug>.md` exists and is non-empty.
+2. Read `vault-path` and `project-name` from `casaflow.config.md`.
+3. Check whether `~/Documents/<project-name>/<slug>/spec.md` exists and is
+   non-empty.
 
 **If no spec exists:**
 
@@ -78,9 +80,9 @@ Then **stop**. Do not enter DISCOVER, BRAINSTORM, or PLAN.
 
 **If spec exists:**
 
-Load `specs/<slug>.md` into context. Proceed to Step 3 with the spec as the
-grounding document for all subsequent stages. The spec's acceptance criteria
-become the pipeline's definition of done.
+Load `~/Documents/<project-name>/<slug>/spec.md` into context. Proceed to
+Step 3 with the spec as the grounding document for all subsequent stages.
+The spec's acceptance criteria become the pipeline's definition of done.
 
 **For bugs and tasks:** Skip this step entirely. Proceed directly to Step 3.
 
@@ -129,7 +131,7 @@ concern explicitly. Mark N/A if it doesn't apply — do not skip silently.
 **Gate check:**
 - [ ] Design approved by user
 - [ ] Concerns checklist completed
-- [ ] Design doc saved to `docs/plans/YYYY-MM-DD-<topic>-design.md`
+- [ ] Design doc saved to `~/Documents/<project-name>/<feature-slug>/design.md`
 
 ---
 
@@ -144,11 +146,11 @@ Invoke `plan`. Every plan must include:
 - Verification steps per task
 - Commit message per task
 
-Save to `docs/plans/YYYY-MM-DD-<topic>-plan.md`.
+Save to `~/Documents/<project-name>/<feature-slug>/plan.md`.
 
 If a spec and/or PRD exists, include a header reference:
 ```
-> **Spec:** specs/<slug>.md
+> **Spec:** ~/Documents/<project-name>/<feature-slug>/spec.md
 > **For Claude:** Use `build` to execute this plan.
 ```
 

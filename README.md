@@ -80,7 +80,7 @@ Type `/casaflow:` — you should see the full list of commands autocomplete. You
 /casaflow:spec
 ```
 
-Claude walks you through six sections: feature summary, acceptance criteria, non-goals, test spec, architecture sketch, and open questions. You write the spec — Claude asks questions and pushes back until each section is solid. At the end, you answer a comprehension check to confirm you understand the most complex acceptance criterion. The spec saves to `specs/<feature-slug>.md`.
+Claude walks you through six sections: feature summary, acceptance criteria, non-goals, test spec, architecture sketch, and open questions. For the test spec, Claude proposes happy path, failure path, and false positive scenarios for each criterion — you review and refine rather than writing from scratch. At the end, you answer a comprehension check to confirm you understand the most complex acceptance criterion. The spec saves to `~/Documents/<project-name>/<feature-slug>/spec.md` in your Obsidian vault.
 
 ### 2. Kick off the pipeline
 
@@ -96,7 +96,7 @@ The pipeline orchestrator. It classifies your work type (bug/feature/improvement
 /casaflow:build
 ```
 
-If you have an existing plan and want to jump straight to building. Build finds your most recent plan in `docs/plans/`, analyzes the task graph, and decides whether to run tasks in parallel or serial. After each stage, you'll face the approval gate — three comprehension questions you must answer before the next stage begins.
+If you have an existing plan and want to jump straight to building. Build finds your plan in the Obsidian vault (`~/Documents/<project-name>/<feature-slug>/plan.md`) or falls back to `docs/plans/`, analyzes the task graph, and decides whether to run tasks in parallel or serial. After each stage, you'll face the approval gate — three comprehension questions you must answer before the next stage begins.
 
 ### 4. Review and ship
 

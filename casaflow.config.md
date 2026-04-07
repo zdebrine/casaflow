@@ -34,6 +34,18 @@ task:
   review: light
 ```
 
+## Documentation
+
+```yaml
+vault-path: ~/Documents
+project-name: casaflow
+# Specs and plans are saved outside the repo in an Obsidian vault.
+# Structure: ~/Documents/<project-name>/<feature-slug>/
+#   spec.md, plan.md, design.md, prd.md
+# This keeps markdown artifacts out of the codebase while remaining
+# accessible to all team members via shared Obsidian vault.
+```
+
 ## Branching
 
 ```yaml

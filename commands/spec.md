@@ -61,8 +61,12 @@ For each acceptance criterion, define:
 - "How to break this test" check: describe one way to make this test a false
   positive. Confirm it can't happen accidentally.
 
-**Claude's job**: For every happy path, ask "what's the failure case?" until
-both are documented. A spec without failure tests is incomplete.
+**Claude's job**: For each acceptance criterion, Claude **proposes** all three
+paths (happy, failure, false positive) based on the criterion and architecture
+context. The developer then reviews, edits, or approves each suggestion.
+Developers should not be expected to generate these from scratch — Claude
+drafts, the developer refines. A spec without failure tests is still
+incomplete, but the developer's job is curation and correction, not invention.
 
 ### 5. Architecture sketch
 Before implementation: what files will change? What new files will be created?
@@ -98,11 +102,19 @@ Stop and surface explicitly before moving on:
 
 ## Completion
 
-When all six sections are solid, Claude produces the spec document and saves
-it as `specs/<feature-slug>.md`.
+When all six sections are solid, Claude produces the spec document.
+
+**Save location**: Read `vault-path` and `project-name` from
+`casaflow.config.md`. Create a feature directory and save the spec:
+
+```
+~/Documents/<project-name>/<feature-slug>/spec.md
+```
 
 Feature slug: lowercase, hyphens, derived from the feature name
-(e.g., "Add checkout flow" — `specs/add-checkout-flow.md`).
+(e.g., "Add checkout flow" → `~/Documents/casaflow/add-checkout-flow/spec.md`).
+
+Create the feature directory if it does not exist.
 
 **Mandatory final comprehension check** before handing off:
 
@@ -113,9 +125,15 @@ Feature slug: lowercase, hyphens, derived from the feature name
 This check is not optional. Claude does not skip it and does not move on if
 the answer is vague.
 
-After the comprehension check passes, invoke the `jira-sync` skill. Do not
-prompt the developer to run `/build` — jira-sync will hand off to `/build`
-when it completes (or is skipped).
+After the comprehension check passes, invoke the `jira-sync` skill if
+configured. Then prompt the developer to start the full pipeline:
+
+> "Spec saved. Run `/casaflow:kickoff` to start the development pipeline —
+> it will set up your ticket, branch, design, plan, and guide you through
+> the full build."
+
+Do **not** hand off directly to `/build` — the developer needs the full
+pipeline (discover → brainstorm → plan → execute → review → ship → learn).
 
 ---
 

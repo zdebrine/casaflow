@@ -56,7 +56,8 @@ Before asking the user anything, do your homework:
 
 1. **Read the ticket** (if one exists) -- extract the problem statement, any existing requirements. Check `jig.config.md` for `ticket-system` to determine where to look.
 2. **Explore the codebase** -- look at relevant entities, services, components, APIs. What exists already?
-3. **Check recent plans/PRDs** -- scan `docs/plans/` for related prior work
+3. **Check recent plans/PRDs** -- if `vault-path` is configured, scan
+   `<vault-path>/<project-name>/` for related prior work. Fallback: scan `docs/plans/`
 
 Then ask **2-3 targeted questions** (not a form):
 - What tier does this feel like? (suggest one based on context)
@@ -93,7 +94,9 @@ Walk through the draft with the user:
 
 ### Step 5: Save
 
-1. **Write the PRD** to `docs/plans/YYYY-MM-DD-<topic>-prd.md`
+1. **Write the PRD** — if `vault-path` is configured, save to
+   `<vault-path>/<project-name>/<feature-slug>/prd.md`. Fallback:
+   `docs/plans/YYYY-MM-DD-<topic>-prd.md`
 2. **Ask**: "Want to sync these requirements to the ticket too?"
 3. If yes -- push the PRD content to the ticket system configured in `jig.config.md`
 4. Confirm save locations to the user
@@ -340,7 +343,7 @@ The acceptance checklist is the **enforceable contract**. Every item must be:
 
 When a PRD exists, implementation plans should reference it:
 
-> **PRD:** docs/plans/YYYY-MM-DD-<topic>-prd.md
+> **PRD:** `<feature-dir>/prd.md`
 
 This pointer tells downstream agents (spec reviewers, team-dev quality gates) where to find the acceptance checklist. They load the PRD, extract the `[ ]` items, and verify each one against the implementation with file:line references.
 
@@ -400,7 +403,7 @@ The PRD becomes the **input** to brainstorming. Brainstorming decides *how* to s
 |---------|------|
 | Full tier | 12 sections, features and large improvements |
 | Light tier | 5 sections, bugs and small improvements |
-| Save location | `docs/plans/YYYY-MM-DD-<topic>-prd.md` |
+| Save location | Vault: `<vault-path>/<project-name>/<feature-slug>/prd.md`, fallback: `docs/plans/YYYY-MM-DD-<topic>-prd.md` |
 | Acceptance items | Atomic, testable, layer-tagged, concrete |
 | Layer tags | `[API]`, `[DATA]`, `[LOGIC]`, `[UI]` |
 | API-first | Platform contract before UI in section order |

@@ -46,8 +46,8 @@ If the spec covers multiple independent subsystems, it should have been broken i
 ```markdown
 # [Feature Name] Implementation Plan
 
-> **PRD:** docs/plans/YYYY-MM-DD-<topic>-prd.md *(include if a PRD exists)*
-> **Design:** docs/plans/YYYY-MM-DD-<topic>-design.md *(include if a design doc exists)*
+> **PRD:** ~/Documents/<project-name>/<feature-slug>/prd.md *(include if a PRD exists)*
+> **Design:** ~/Documents/<project-name>/<feature-slug>/design.md *(include if a design doc exists)*
 > **For agents:** Use team-dev (parallel) or sdd (sequential) to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** [One sentence describing what this builds]
@@ -205,7 +205,18 @@ If you find issues, fix them inline. No need to re-review -- just fix and move o
 
 ## Plan Output
 
-Save to: `docs/plans/YYYY-MM-DD-<feature-name>-plan.md`
+Save to the feature directory in the Obsidian vault. Read `vault-path` and
+`project-name` from `casaflow.config.md` (or `jig.config.md`):
+
+```
+~/Documents/<project-name>/<feature-slug>/plan.md
+```
+
+Create the feature directory if it does not exist. If a spec already exists
+in this directory, the plan lives alongside it.
+
+**Fallback**: If no `vault-path` is configured, save to
+`docs/plans/YYYY-MM-DD-<feature-name>-plan.md` (legacy behavior).
 
 ---
 
@@ -213,7 +224,7 @@ Save to: `docs/plans/YYYY-MM-DD-<feature-name>-plan.md`
 
 After saving the plan, offer the execution choice:
 
-> "Plan complete and saved to `docs/plans/<filename>.md`. Two execution options:
+> "Plan complete and saved. Two execution options:
 >
 > **1. Team-Driven (parallel)** -- Spawns implementer teammates in split panes, staggered review pipeline. Best for 3+ independent tasks touching different files.
 >
