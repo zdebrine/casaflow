@@ -4,27 +4,18 @@
 
 **The CasaPerks AI engineering workflow — spec-first, comprehension-gated, Jira-native.**
 
-CasaFlow is built on the [Jig](https://github.com/duronext/jig) framework and tuned for CasaPerks engineering culture. It guides AI agents through a structured pipeline — from Jira ticket to post-mortem — with quality gates at every stage that keep developers in comprehension of what they're building.
-
-**Four priorities**: Speed · Dev comprehension · Code robustness · Developer education
-
----
-
-## Why CasaFlow
-
-Most AI dev tools optimize for speed. CasaFlow optimizes for **comprehension first, speed second** — because an engineer who doesn't understand their own codebase will accumulate debt faster than any AI can generate it.
-
-Every feature flows through a structured pipeline with two hard gates: a **spec gate** (no code without a spec) and **approval gates** (three comprehension questions after every build stage). These gates are intentionally uncomfortable. The discomfort is the learning.
-
-CasaFlow's workflow is designed so that cutting corners on comprehension is harder than just doing the work. Lean into it.
+CasaFlow guides you from Jira ticket to merged PR with quality gates that
+keep you in comprehension of what you're building. Give it a ticket ID and
+it handles the rest — routing features through a spec-first pipeline and
+bugs through root-cause-first debugging.
 
 ---
 
-## Installation
+## Quick Start
 
-### Step 1: Add the settings file to your repo
+### 1. Install
 
-Create `.claude/settings.json` in your project root and commit it. This way every engineer who clones the repo gets the marketplace declaration automatically.
+Add `.claude/settings.json` to your project root and commit it:
 
 ```json
 {
@@ -42,176 +33,27 @@ Create `.claude/settings.json` in your project root and commit it. This way ever
 }
 ```
 
-### Step 2: Install the plugin from the terminal
-
-Open a terminal, `cd` into your project, and launch the Claude Code CLI:
+Then open the **terminal CLI** (not VS Code) and run:
 
 ```bash
 cd /path/to/your-project
 claude
 ```
 
-Run these two commands inside the Claude Code REPL:
-
 ```
 /plugin marketplace add https://github.com/CasaPerks/casaflow.git
 /plugin install casaflow@casaperks-casaflow --scope project
 ```
 
-Then restart your Claude session (`/exit` and run `claude` again).
+Restart your Claude session (`/exit` then `claude`).
 
-**Three things that will trip you up if you skip them:**
+> **Important:** Use the terminal CLI for `/plugin` commands. VS Code picks
+> up the plugin automatically after install. Always use the full HTTPS URL.
 
-1. **Use the terminal CLI, not VS Code.** The `/plugin` commands must be run in the terminal (`claude`). They don't work from the VS Code chat panel. After installing from the terminal, VS Code picks up the plugin automatically.
-2. **Use the full HTTPS URL.** The shorthand `CasaPerks/casaflow` tries SSH and will fail unless you have SSH keys configured for GitHub. Always use `https://github.com/CasaPerks/casaflow.git`.
-3. **Restart the session after install.** Commands won't appear until you start a new Claude session. In VS Code, reload the window (Cmd+Shift+P → "Reload Window").
+### 2. Connect Jira
 
-### Step 3: Verify
-
-Type `/casaflow:` — you should see the full list of commands autocomplete. You can also run `/plugins` to confirm CasaFlow is listed and enabled.
-
----
-
-## Your First Feature
-
-### 1. Write the spec
-
-```
-/casaflow:spec
-```
-
-Claude walks you through six sections: feature summary, acceptance criteria, non-goals, test spec, architecture sketch, and open questions. For the test spec, Claude proposes happy path, failure path, and false positive scenarios for each criterion — you review and refine rather than writing from scratch. At the end, you answer a comprehension check to confirm you understand the most complex acceptance criterion. The spec saves to `~/Documents/<project-name>/<feature-slug>/spec.md` in your Obsidian vault.
-
-### 2. Kick off the pipeline
-
-```
-/casaflow:kickoff
-```
-
-The pipeline orchestrator. It classifies your work type (bug/feature/improvement/task), checks for the spec (features and improvements are blocked without one), and walks through each stage: discover, brainstorm, plan, execute, review, ship, learn. You don't need to run each stage manually — kickoff orchestrates the handoffs.
-
-### 3. Build
-
-```
-/casaflow:build
-```
-
-If you have an existing plan and want to jump straight to building. Build finds your plan in the Obsidian vault (`~/Documents/<project-name>/<feature-slug>/plan.md`) or falls back to `docs/plans/`, analyzes the task graph, and decides whether to run tasks in parallel or serial. After each stage, you'll face the approval gate — three comprehension questions you must answer before the next stage begins.
-
-### 4. Review and ship
-
-```
-/casaflow:review
-/casaflow:pr-create
-```
-
-Review dispatches the specialist swarm (security, dead-code, error-handling, async-safety, performance) in parallel, scores findings mechanically, and produces a unified report. Fix any Critical or Major findings, then pr-create writes the PR with a structured description and test plan.
-
----
-
-## Command Reference
-
-### Core Pipeline
-
-| Command | What It Does |
-|---------|-------------|
-| `/casaflow:kickoff` | Start the full pipeline. Classifies work, enforces spec gate, orchestrates all stages. |
-| `/casaflow:spec` | Write a feature spec (6 sections). Claude asks questions — doesn't write it for you. |
-| `/casaflow:brainstorm` | Collaborative design exploration. Hard gate: no code until design is approved. |
-| `/casaflow:plan` | Turn a design into an implementation plan with bite-sized TDD tasks. |
-| `/casaflow:build` | Execute a plan. Auto-selects parallel or serial strategy. |
-| `/casaflow:review` | Dispatch the specialist review swarm. Produces scored report. |
-| `/casaflow:pr-create` | Create a PR with voice/tone standards and test plan. |
-| `/casaflow:pr-respond` | Handle PR feedback: analyze, fix, commit, push, reply, resolve. |
-| `/casaflow:finish` | Branch completion — merge, PR, keep, or discard. |
-
-### Quality Gates
-
-| Command | What It Does |
-|---------|-------------|
-| `/casaflow:approve` | Stage report + 3 comprehension questions (structural, failure mode, change impact). |
-| `/casaflow:review-tests` | 4-phase test audit: coverage, mutation testing, rubric, letter grade. |
-| `/casaflow:verify` | Evidence before assertions — run it before claiming it works. |
-
-### Education
-
-| Command | What It Does |
-|---------|-------------|
-| `/casaflow:explain` | 5-section explanation: approach, failure modes, change surface, tests, refactor. |
-| `/casaflow:retro` | Post-feature retrospective with pattern detection across retros. |
-| `/casaflow:postmortem` | Post-merge analysis with specialist/logic reviewer diagnosis. |
-
-### Development Practices
-
-| Command | What It Does |
-|---------|-------------|
-| `/casaflow:debug` | Systematic debugging — root cause before fixes, always. |
-| `/casaflow:tdd` | Red-green-refactor discipline. |
-| `/casaflow:prd` | PRD creation with enforceable acceptance checklists. |
-| `/casaflow:ticket` | Create or look up a ticket. |
-
-### Engineering Standards
-
-| Command | What It Does |
-|---------|-------------|
-| `/casaflow:eng-copywriting` | Sentence case standards for UI copy. |
-| `/casaflow:eng-logging` | Log level guidance. |
-| `/casaflow:eng-testing` | Test strategy guidance. |
-
----
-
-## How the Pipeline Works
-
-```
-[SPEC] → DISCOVER → BRAINSTORM → PLAN → EXECUTE → REVIEW → SHIP → LEARN
-  ↑                                          ↑
-  Hard gate for features              Approve-gate after
-  (no code without a spec)            every build stage
-```
-
-Work type determines depth:
-
-| Work Type | Spec Gate | Brainstorm | Review | Learn |
-|-----------|-----------|------------|--------|-------|
-| Feature | Required | Full (with concerns checklist) | Full swarm | Always |
-| Improvement | Required | Medium (2-3 approaches) | Full swarm | Always |
-| Bug | Skipped | Light (root cause + fix) | Full swarm | Optional |
-| Task/Chore | Skipped | Skipped | Light | Skipped |
-
----
-
-## Configuration
-
-CasaFlow reads settings from `casaflow.config.md` in your project root. If the file doesn't exist, sensible defaults are used.
-
-Create one from the template:
-
-```bash
-cp .claude-plugin-source/scaffold/casaflow.config.md casaflow.config.md
-```
-
-Or create it manually with the essentials:
-
-```markdown
-## Team
-name: your-team-name
-platform: claude
-git-host: github
-ticket-system: jira
-
-## Jira
-project-key: CASA
-
-## Branching
-format: "{username}/{ticket-id}-{kebab-title}"
-main-branch: main
-```
-
-See [scaffold/casaflow.config.md](scaffold/casaflow.config.md) for all available options.
-
-### Jira Sync (Optional)
-
-CasaFlow can sync specs to Jira, create tickets, update statuses, and post PR URLs as comments. Each developer configures this in their **personal** Claude settings (`~/.claude/settings.json`):
+Each developer adds the Atlassian MCP server to their personal Claude
+settings (`~/.claude/settings.json`):
 
 ```json
 {
@@ -229,60 +71,192 @@ CasaFlow can sync specs to Jira, create tickets, update statuses, and post PR UR
 }
 ```
 
-Get your API token at https://id.atlassian.com/manage-profile/security/api-tokens. If Jira isn't configured, CasaFlow skips sync gracefully — it never blocks the pipeline.
+Get your API token at https://id.atlassian.com/manage-profile/security/api-tokens.
+
+Jira is optional — CasaFlow works without it, you'll just enter context
+manually instead.
+
+### 3. Verify
+
+Type `/casaflow:` — you should see the full command list autocomplete.
 
 ---
 
-## Updating
+## Two Workflows
 
-When a new version of CasaFlow is pushed, run in the terminal CLI:
+Everything starts with `/casaflow:spec`. Give it your Jira ticket ID and
+CasaFlow reads the ticket, determines the work type, and routes you into
+the right workflow automatically.
+
+### Feature Workflow
+
+For Stories, Features, Improvements, Tasks, and all non-bug ticket types.
+
+```
+/casaflow:spec          Provide ticket ID → pulls Jira context
+     │                  Pre-seeds the spec with ticket details
+     │                  You write and refine 6 sections:
+     │                  summary, criteria, non-goals, tests, architecture, questions
+     ▼
+/casaflow:kickoff       Creates ticket + branch (feature/{JIRA-ID}:{name})
+     │                  Design exploration (brainstorm)
+     │                  Implementation plan (plan)
+     ▼
+/casaflow:build         Executes the plan stage by stage
+     │                  After each stage: 3 comprehension questions (/approve)
+     ▼
+/casaflow:review        Specialist swarm (security, dead-code, errors, perf)
+/casaflow:pr-create     PR with description + test plan
+```
+
+### Bug Workflow
+
+For Bug ticket types. Detected automatically from the Jira issue type.
+
+```
+/casaflow:spec          Provide ticket ID → pulls Jira context
+     │                  Detects "Bug" type
+     │                  Redirects automatically to:
+     ▼
+/casaflow:kickoff       Skips re-fetching ticket (context passed through)
+     │                  Creates branch (fix/{JIRA-ID}:{name})
+     │                  Light brainstorm (root cause + fix approach)
+     │                  Implementation plan
+     ▼
+/casaflow:build         Uses /debug for root-cause investigation:
+     │                  Phase 1: Investigation (no fixes yet)
+     │                  Phase 2: Pattern analysis
+     │                  Phase 3: Hypothesis testing
+     │                  Phase 4: Implementation + failing test
+     ▼
+/casaflow:review        Same specialist swarm
+/casaflow:pr-create     PR with description + test plan
+```
+
+### No Jira? No Problem
+
+If Jira isn't configured, `/casaflow:spec` skips the ticket prompt and
+you describe the feature from scratch. You can also type **skip** at the
+ticket prompt to proceed without Jira context.
+
+---
+
+## Branch and Commit Conventions
+
+Branches are named by work type:
+
+```
+feature/{JIRA-ID}:{kebab-name}    # features, improvements
+fix/{JIRA-ID}:{kebab-name}        # bugs
+task/{JIRA-ID}:{kebab-name}       # tasks, chores
+```
+
+Commits follow conventional format and include the Jira ticket ID
+automatically (parsed from the branch name):
+
+```
+feat(scope): add payment validation endpoint [CASA-123]
+```
+
+---
+
+## All Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/casaflow:spec` | Write a feature spec. Entry point for all work. |
+| `/casaflow:kickoff` | Full pipeline orchestrator. |
+| `/casaflow:build` | Execute an implementation plan. |
+| `/casaflow:approve` | Pass a stage gate (3 comprehension questions). |
+| `/casaflow:review` | Specialist review swarm. |
+| `/casaflow:pr-create` | Create a PR. |
+| `/casaflow:pr-respond` | Respond to PR review feedback. |
+| `/casaflow:finish` | Complete a branch (merge, PR, keep, discard). |
+| `/casaflow:debug` | Root-cause-first debugging. |
+| `/casaflow:explain` | Deep explanation of code just written. |
+| `/casaflow:verify` | Run it before claiming it works. |
+| `/casaflow:tdd` | Red-green-refactor discipline. |
+| `/casaflow:review-tests` | 4-phase test quality audit. |
+| `/casaflow:brainstorm` | Design exploration. |
+| `/casaflow:plan` | Spec to implementation plan. |
+| `/casaflow:prd` | Product requirements document. |
+| `/casaflow:ticket` | Create or look up a ticket. |
+| `/casaflow:retro` | Post-feature retrospective. |
+| `/casaflow:postmortem` | Post-merge analysis. |
+
+---
+
+## Configuration
+
+CasaFlow reads `casaflow.config.md` in your project root. Create one from
+the template:
+
+```bash
+cp .claude-plugin-source/scaffold/casaflow.config.md casaflow.config.md
+```
+
+Key settings:
+
+```yaml
+## Team
+ticket-system: jira          # enables Jira integration
+
+## Jira
+project-key: CASA             # your Jira project key
+
+## Branching
+feature: "feature/{ticket-id}:{kebab-title}"
+fix: "fix/{ticket-id}:{kebab-title}"
+default: "task/{ticket-id}:{kebab-title}"
+
+## Commit
+require-ticket-reference: true
+```
+
+See [scaffold/casaflow.config.md](scaffold/casaflow.config.md) for all
+options.
+
+---
+
+## Updating the Plugin
+
+When a new version of CasaFlow is pushed, each developer needs to pull
+the latest. Open the **terminal CLI** and run:
 
 ```
 /plugin marketplace update casaperks-casaflow
 /plugin install casaflow@casaperks-casaflow --scope project
 ```
 
+Then restart your Claude session (`/exit` then `claude`). In VS Code,
+reload the window (Cmd+Shift+P → "Reload Window").
+
+You can check your current version with `/plugins` — it shows which
+plugins are installed and their source.
+
 ---
 
 ## Troubleshooting
 
-**Commands don't show up when I type `/casaflow:`**
+**Commands don't show up:** Install from the terminal CLI, not VS Code.
+Restart your session after install. In VS Code, reload the window.
 
-Make sure you've run the plugin install from the **terminal CLI** (not VS Code) — see Installation above. The `.claude/settings.json` file alone doesn't install the plugin. After installing, restart your Claude session. In VS Code, reload the window (Cmd+Shift+P → "Reload Window").
+**SSH error when adding marketplace:** Use the full HTTPS URL:
+`/plugin marketplace add https://github.com/CasaPerks/casaflow.git`
 
-**SSH authentication error when adding marketplace**
+**Claude doesn't follow the workflow:** Start a fresh conversation. Long
+sessions can dilute instruction adherence.
 
-Use the full HTTPS URL: `/plugin marketplace add https://github.com/CasaPerks/casaflow.git`. The shorthand form uses SSH by default.
-
-**Claude doesn't follow the command workflow**
-
-Try running the command again in a fresh conversation. Long conversations can dilute instruction adherence.
-
-**Build chooses serial when I expected parallel**
-
-Build auto-selects based on the task graph. It uses serial when tasks share files or there aren't enough independent tasks. Check `parallel-threshold` in `casaflow.config.md` (default: 3). Also verify agent teams are enabled: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS: "1"` in Claude Code settings.
-
-**Spec gate blocks me but I don't want to write a spec**
-
-The spec gate only applies to features and improvements. Classify your work as a bug or task during kickoff and the gate is skipped. For features, the spec is non-negotiable.
+**Spec gate blocks me:** The spec gate only applies to features and
+improvements. Bugs and tasks skip it automatically.
 
 ---
 
-## Guides
+## Further Reading
 
-| Guide | What It Covers |
-|-------|---------------|
-| [Getting the Most Out of CasaFlow](docs/getting-the-most-out-of-casaflow.md) | Philosophy, full pipeline walkthrough, and how to engage every stage for maximum value |
-
-## Framework Reference
-
-| Document | What It Covers |
-|----------|---------------|
-| [framework/PIPELINE.md](framework/PIPELINE.md) | The 7-stage development pipeline |
-| [framework/DISCOVERY.md](framework/DISCOVERY.md) | How skills are found and loaded |
-| [framework/SKILL_SCHEMA.md](framework/SKILL_SCHEMA.md) | Frontmatter spec for writing skills |
-| [framework/TIER_SYSTEM.md](framework/TIER_SYSTEM.md) | How tiers control skill activation |
-| [scaffold/casaflow.config.md](scaffold/casaflow.config.md) | Config template |
+- [Getting the Most Out of CasaFlow](docs/getting-the-most-out-of-casaflow.md)
+- [framework/PIPELINE.md](framework/PIPELINE.md) — the 7-stage pipeline
+- [scaffold/casaflow.config.md](scaffold/casaflow.config.md) — config reference
 
 ---
 

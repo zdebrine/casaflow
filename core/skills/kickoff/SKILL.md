@@ -86,6 +86,18 @@ Ask the user if the type isn't obvious from context.
 
 **Gate**: A ticket exists and the problem is understood.
 
+### Pre-fetched context check
+
+If ticket context and work type were provided by a prior skill in this
+conversation (e.g., a spec skill detected a Bug and handed off with ticket
+details), **use that context directly**:
+- Do not re-ask for the ticket ID
+- Do not re-fetch from the ticket system
+- Mark the ticket gate as satisfied
+- Proceed directly to branch setup (step 3 below)
+
+If no pre-fetched context exists, follow the normal flow:
+
 ### Actions
 
 1. **Check for existing ticket**:
@@ -99,7 +111,18 @@ Ask the user if the type isn't obvious from context.
    - For features: confirm scope with the user if ambiguous.
 
 3. **Set up the branch**:
-   Read branching format from `jig.config.md`:
+   Read the `## Branching` section from `jig.config.md`. If the config
+   provides type-aware formats (e.g., `feature`, `fix`, `default`), select
+   the format matching the work type:
+   - `feature` format for features and improvements
+   - `fix` format for bugs
+   - `default` format for tasks and chores
+
+   Interpolate `{ticket-id}` from the ticket key and `{kebab-title}` from
+   the slugified work description. If no ticket ID is available, omit it
+   from the branch name.
+
+   If the config uses a single `format` string (legacy), use that directly:
    ```bash
    git checkout -b {format from config}
    ```
