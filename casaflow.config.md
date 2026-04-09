@@ -49,7 +49,9 @@ project-name: casaflow
 ## Branching
 
 ```yaml
-format: "{username}/casaflow-{number}-{kebab-title}"
+feature: "feature/{ticket-id}:{kebab-title}"
+fix: "fix/{ticket-id}:{kebab-title}"
+default: "task/{ticket-id}:{kebab-title}"
 main-branch: main
 ```
 
@@ -87,6 +89,6 @@ convention: conventional
 format: "type(scope): message"
 types: [feat, fix, docs, chore, refactor, test]
 scopes: [core, framework, packs, adapters, scaffold, docs, agents, specialists]
-require-ticket-reference: false
+require-ticket-reference: true
 co-author: true
 ```

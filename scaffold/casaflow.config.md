@@ -77,8 +77,11 @@ done-on-merge: true                # Transition ticket to Done on merge
 ## Branching
 
 ```yaml
-# Include {ticket-id} to pull the key from the Jira ticket
-format: "{username}/{ticket-id}-{kebab-title}"
+# Branch prefix is determined by work type (feature, fix, task)
+# {ticket-id} is parsed from the Jira ticket key
+feature: "feature/{ticket-id}:{kebab-title}"
+fix: "fix/{ticket-id}:{kebab-title}"
+default: "task/{ticket-id}:{kebab-title}"
 main-branch: main
 ```
 

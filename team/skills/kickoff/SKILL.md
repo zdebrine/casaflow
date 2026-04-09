@@ -92,6 +92,18 @@ The spec's acceptance criteria become the pipeline's definition of done.
 
 **Gate**: A ticket exists and the problem is understood.
 
+### Pre-fetched context check
+
+If ticket context and work type were provided by a prior skill in this
+conversation (e.g., `/spec` detected a Bug and handed off with ticket
+details), **use that context directly**:
+- Do not re-ask for the ticket ID
+- Do not re-fetch from Jira
+- Mark the ticket gate as satisfied
+- Proceed directly to branch setup (step 3 below)
+
+If no pre-fetched context exists, follow the normal flow:
+
 1. **Check for existing ticket**: Read `casaflow.config.md` for `ticket-system`
    and use the appropriate integration. If on Jira and a ticket key was
    provided, fetch it. If no ticket exists, ask whether to create one.
@@ -101,7 +113,16 @@ The spec's acceptance criteria become the pipeline's definition of done.
    - For bugs: check error context, reproduce if possible.
    - For improvements: confirm existing behavior before proposing changes.
 
-3. **Set up the branch**: Read `branching.format` from config.
+3. **Set up the branch**: Read the `## Branching` section from
+   `casaflow.config.md`. Select the format matching the work type:
+   - `feature` format for features and improvements
+   - `fix` format for bugs
+   - `default` format for tasks and chores
+
+   Interpolate `{ticket-id}` from the Jira ticket key and `{kebab-title}`
+   from the slugified work description. If no ticket ID is available (Jira
+   not configured or dev skipped), omit the ticket ID and use just the
+   kebab title (e.g., `feature/add-checkout-flow`).
 
 **Gate check:**
 - [ ] Ticket exists (or user opted to skip tracking)

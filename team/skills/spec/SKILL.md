@@ -1,10 +1,11 @@
 ---
 name: spec
 description: >
-  Use when writing a feature spec before any code is written. Guides the
-  developer through feature summary, acceptance criteria, non-goals, test spec,
-  architecture sketch, and open questions. Invoked by /spec or by kickoff when
-  no spec exists for a feature.
+  Use when writing a feature spec before any code is written. When Jira is
+  configured, fetches ticket context to pre-seed the spec and routes bugs to
+  /kickoff automatically. Guides the developer through feature summary,
+  acceptance criteria, non-goals, test spec, architecture sketch, and open
+  questions. Invoked by /spec or by kickoff when no spec exists for a feature.
 tier: workflow
 alwaysApply: false
 ---
@@ -31,6 +32,112 @@ and reflects answers back until each section is solid.
 Invoked by:
 - Developer running `/casaflow:spec`
 - `kickoff` skill when no spec file exists for a feature/improvement
+
+---
+
+## Step 0: Jira Ticket Context (optional)
+
+Before starting the spec interview, check whether Jira integration is
+available. This step pre-seeds the spec with ticket context and routes bugs
+to the correct workflow automatically.
+
+### 0a. Check configuration
+
+Read `casaflow.config.md` (or `jig.config.md`). Look for the `ticket-system`
+value in the `## Team` section.
+
+- If `ticket-system` is **not** `jira` → skip Step 0 entirely. Proceed
+  directly to Section 1 (Feature Summary). Current behavior is unchanged.
+- If `ticket-system` **is** `jira` → continue to 0b.
+
+### 0b. Check MCP availability
+
+Confirm the Atlassian MCP server is available. If Jira MCP tools are not
+configured or not responding, say:
+
+> "Jira is configured but the Atlassian MCP server is not available. To
+> enable Jira integration, add the Atlassian MCP server to your Claude Code
+> settings.json under `mcpServers`. Continuing without ticket context."
+
+Then proceed directly to Section 1 (current behavior).
+
+### 0c. Ask for ticket ID
+
+> "Jira is connected. Do you have a ticket ID for this work?
+> (paste the ticket ID, or type **skip** to continue without one)"
+
+- If **skip** → proceed to Section 1 (current behavior, no ticket context).
+- If a ticket ID is provided → continue to 0d.
+
+### 0d. Fetch ticket
+
+Use the Atlassian MCP to fetch the ticket by the provided ID. Extract:
+- **Summary** (ticket title)
+- **Description** (ticket body)
+- **Issue type** (Bug, Story, Task, Epic, Sub-task, etc.)
+- **Acceptance criteria** (if present in the description)
+
+**If the fetch fails** (bad ID, network error, permissions):
+
+> "Could not fetch ticket [ID]: [error reason]. You can:
+> 1. Try a different ticket ID
+> 2. Skip and continue without ticket context"
+
+If the developer retries, repeat 0d. If they skip, proceed to Section 1.
+
+### 0e. Display and confirm
+
+Present the fetched ticket context:
+
+> "Here's what I pulled from **[TICKET-ID]**:
+>
+> **Type:** [issue type]
+> **Summary:** [summary]
+> **Description:** [description, truncated if very long]
+> **Acceptance Criteria:** [if present, otherwise "none listed"]
+>
+> Does this look right? (yes / try a different ticket / skip)"
+
+- **try a different ticket** → return to 0c
+- **skip** → proceed to Section 1 without ticket context
+- **yes** → continue to 0f
+
+### 0f. Route by issue type
+
+**If issue type is "Bug":**
+
+> "This is a bug ticket. Bugs follow a different workflow — root cause
+> investigation before fixes, not a feature spec. Redirecting to
+> `/kickoff` with the bug context so you don't have to re-enter it."
+
+Then hand off to `/kickoff` with the following context stated explicitly
+in the handoff message:
+- **Work type:** bug
+- **Ticket ID:** [the fetched ticket ID]
+- **Ticket summary:** [summary]
+- **Ticket description:** [description]
+- **Acceptance criteria:** [if present]
+- **Instruction to kickoff:** "Ticket context is pre-fetched. Skip the
+  ticket prompt in DISCOVER. Proceed directly to branch setup and
+  classify as bug."
+
+**Stop the spec flow.** Do not proceed to Section 1.
+
+**If issue type is anything other than "Bug"** (Story, Feature, Task,
+Epic, Sub-task, Improvement, or any unrecognized type):
+
+Treat as a feature. Pre-seed the Feature Summary section with the ticket
+context:
+
+> "Based on the ticket, here's a starting point for the feature summary:
+>
+> [Draft summary derived from ticket title and description]
+>
+> This is a starting point — not the spec. Let's refine it."
+
+Then proceed to Section 1 (Feature Summary). Claude still asks the
+developer to explain the feature in their own words. The ticket context
+informs the conversation but does not replace the developer's articulation.
 
 ---
 
