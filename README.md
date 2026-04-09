@@ -219,6 +219,13 @@ When a new version of CasaFlow is pushed, each developer needs to pull
 the latest. Open the **terminal CLI** and run:
 
 ```
+// remove the current casaflow cache if there is one
+rm -rf ~/.claude/plugins/cache/casaperks-casaflow
+```
+
+Open a Claude session
+
+```
 /plugin marketplace update casaperks-casaflow
 /plugin install casaflow@casaperks-casaflow --scope project
 ```
