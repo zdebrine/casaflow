@@ -1,4 +1,4 @@
-# Jig Pipeline
+# CasaFlow Pipeline
 
 The guaranteed order of operations for all development work in Jig.
 
